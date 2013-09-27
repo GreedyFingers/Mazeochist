@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 73dd654b3e1a2d5478b8be99d8d06e67
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - roomObject: {instanceID: 0}
+  - wallObject: {fileID: 100000, guid: 68d37a37e4a55d14fbc1b73bda5a1c90, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

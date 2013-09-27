@@ -1,0 +1,10 @@
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\UnityEditor.dll
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\UnityEngine.dll
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\Mono.Cecil.dll
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\nunit.framework.dll
+C:\Users\Squee\Documents\labyrinth\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+C:\Users\Squee\Documents\labyrinth\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Squee\Documents\labyrinth\obj\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\Squee\Documents\labyrinth\obj\Debug\Assembly-CSharp-firstpass.pdb
