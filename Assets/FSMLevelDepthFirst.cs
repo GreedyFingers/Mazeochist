@@ -5,6 +5,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 
 	public GameObject roomObject;
 	public GameObject wallObject;
+	public GameObject nothing;
 
 	private ArrayList objaRooms = new ArrayList();
 
