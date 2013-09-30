@@ -7,6 +7,7 @@ public class roomScript : MonoBehaviour {
 	public bool leftRoom = false;
 	public bool rightRoom = false;
 	public bool bottomRoom = false;
+	public bool edgeRoom = false;
 	public ArrayList objaNeighboringRooms = new ArrayList();
 	
 	void Start (){}

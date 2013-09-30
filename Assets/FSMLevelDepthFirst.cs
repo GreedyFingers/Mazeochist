@@ -3,9 +3,11 @@ using System.Collections;
 
 public class FSMLevelDepthFirst : MonoBehaviour {
 
+#region Class-Level Attributes
+	
 	public GameObject roomObject;
 	public GameObject wallObject;
-	public GameObject nothing;
+	public GameObject objPlayer;	
 
 	private ArrayList objaRooms = new ArrayList();
 
@@ -15,7 +17,24 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	private enum neighborRelativePosition {Unassigned, Left, Right, Below, Above};
 	private enum state {makeLevel, playingGame, gameWon, gameLost};	
 	private state currentState;
-
+	
+	private GameObject _startingRoom;
+	private GameObject _endingRoom;
+	
+	private GameObject StartingRoom
+	{
+		get {return _startingRoom;}
+		set {_startingRoom = value;}
+	}
+	private GameObject EndingRoom
+	{
+		get {return _endingRoom;}
+		set {_endingRoom = value;}
+	}
+	
+#endregion
+	
+#region FSM Methods
 	// Use this for initialization
 	void Start () 
 	{
@@ -36,10 +55,30 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		}//switch
 	}//Update
 	
+#endregion
+	
+#region Class Methods
+	
 	//generate level
 	void createGrid()
-	{
+	{		
+		initializeGrid();
+		getAllNeighboringRooms();
+        //choose starting room
+		StartingRoom = chooseStartingPoint();
+		//create player
+		Instantiate(objPlayer,
+					new Vector3(StartingRoom.transform.position.x,
+							StartingRoom.transform.position.y+1,
+							StartingRoom.transform.position.z),
+					Quaternion.identity);		
+		//begin Recursive Depth-First Search for creating maze from grid of rooms
+        visitNeighbors(neighborRelativePosition.Unassigned, StartingRoom);		
 		
+	}
+	
+	void initializeGrid()
+	{
 	    GameObject objCurrentRoom;
 
         //create grid of rooms
@@ -57,15 +96,32 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				objCurrentRoom.GetComponent<roomScript>().visited = false;
                 //is room on border?
 				if(intCurrentX == 0)
+				{
 					objCurrentRoom.GetComponent<roomScript>().leftRoom = true;
+					objCurrentRoom.GetComponent<roomScript>().edgeRoom = true;	
+				}
 				if(intCurrentZ == 0)
+				{
 					objCurrentRoom.GetComponent<roomScript>().bottomRoom = true;
+					objCurrentRoom.GetComponent<roomScript>().edgeRoom = true;	
+				}
 				if(intCurrentX == intGridSize-1)
+				{
 					objCurrentRoom.GetComponent<roomScript>().rightRoom = true;
+					objCurrentRoom.GetComponent<roomScript>().edgeRoom = true;	
+				}
 				if(intCurrentZ == intGridSize-1)
+				{
 					objCurrentRoom.GetComponent<roomScript>().topRoom = true;
+					objCurrentRoom.GetComponent<roomScript>().edgeRoom = true;	
+				}
 			}//for
 		}//for
+	}
+	
+	void getAllNeighboringRooms()
+	{	
+	    GameObject objCurrentRoom;
 		
 		for (int intRow = 0; intRow < intGridSize; intRow++)
 		{
@@ -83,18 +139,22 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				if(objCurrentRoom.GetComponent<roomScript>().rightRoom != true)
 					objCurrentRoom.GetComponent<roomScript>().objaNeighboringRooms.Add(objaRooms[intCurrentIndex+intGridSize]);											
 			}//for
-		}//for
+		}//for		
+	}
+	
+	GameObject chooseStartingPoint()
+	{
+		GameObject objCurrentRoom;
+		int intRandom;
+		do
+		{
+			intRandom = Random.Range (0,objaRooms.Count);
+			objCurrentRoom = (GameObject)objaRooms[intRandom];
+			objCurrentRoom = objCurrentRoom.gameObject;		
+		} while (objCurrentRoom.GetComponent<roomScript>().edgeRoom == false);
 		
-        //start removing walls
-		int intRandom = 0;
-        //pick room along left wall to be starting point
-		intRandom = Random.Range (0,intGridSize);
-		objCurrentRoom = (GameObject)objaRooms[intRandom];
-		objCurrentRoom = objCurrentRoom.gameObject;
-		objCurrentRoom.GetComponent<roomScript>().visited = true;
-		//begin Recursive Depth-First Search for creating maze from grid of rooms
-        visitNeighbors(neighborRelativePosition.Unassigned, objCurrentRoom);		
-		
+		objCurrentRoom.GetComponent<roomScript>().visited = true;					
+		return objCurrentRoom;
 	}
 	
 	//Recursive function to remove walls until all neighbors are visited
@@ -194,5 +254,11 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		}		
 		return intUnvisitedCount;
 	}
+	
+#endregion	
+	
+#region Controller Methods
+	
+#endregion
 
 }
