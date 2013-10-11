@@ -5,13 +5,14 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 
 #region Class-Level Attributes
 	
+	public GameObject columnObject;
 	public GameObject roomObject;
 	public GameObject wallObject;
 	public GameObject objPlayer;	
 
 	private ArrayList objaRooms = new ArrayList();
 
-	private float fltRoomSize = 9f;
+	private float fltRoomSize = 12f;
 	public int intGridSize = 5;
 	
 	private enum neighborRelativePosition {Unassigned, Left, Right, Below, Above};
