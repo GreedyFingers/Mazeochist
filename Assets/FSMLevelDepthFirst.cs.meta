@@ -3,8 +3,10 @@ guid: 73dd654b3e1a2d5478b8be99d8d06e67
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - roomObject: {instanceID: 0}
-  - wallObject: {fileID: 100000, guid: 68d37a37e4a55d14fbc1b73bda5a1c90, type: 2}
+  - columnObject: {fileID: 100000, guid: ce653edb3d1c9964d91ee3da4a5c384a, type: 2}
+  - roomObject: {fileID: 100000, guid: 01af5d36265a4f84f8aafdeea5e3a083, type: 2}
+  - wallObject: {fileID: 100000, guid: 53ab09afff7cf2044a5e2cf4ea202f22, type: 2}
+  - objPlayer: {fileID: 100002, guid: 9d4133d5d30b644bd87802a347eaccbe, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
