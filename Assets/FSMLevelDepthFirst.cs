@@ -16,13 +16,14 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	public int intGridSize = 5;
 	
 	private enum neighborRelativePosition {Unassigned, Left, Right, Below, Above};
-	private enum state {makeLevel, playingGame, gameWon, gameLost};	
+	private enum state {makeLevel, playingGame, paused, gameWon, gameLost};	
 	private state currentState;
 	
 	private GameObject _startingRoom;
 	private GameObject _endingRoom;
+	private GameObject _player;
 	
-	private GameObject StartingRoom
+	public GameObject StartingRoom
 	{
 		get {return _startingRoom;}
 		set {_startingRoom = value;}
@@ -53,6 +54,10 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				currentState = state.playingGame;
 				break;
 			}	
+			case(state.paused):
+			{
+				break;
+			}
 		}//switch
 	}//Update
 	
@@ -60,21 +65,27 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	
 #region Class Methods
 	
+	#region Grid Creation
+	
 	//generate level
 	void createGrid()
 	{		
 		initializeGrid();
 		getAllNeighboringRooms();
         //choose starting room
-		StartingRoom = chooseStartingPoint();
+		_startingRoom = chooseEdgeRoom();
+		_startingRoom.GetComponent<roomScript>().visited = true;
+		_endingRoom = chooseEdgeRoom();
+		EndingRoom.collider.enabled = true;
 		//create player
-		Instantiate(objPlayer,
-					new Vector3(StartingRoom.transform.position.x,
-							StartingRoom.transform.position.y+1,
-							StartingRoom.transform.position.z),
-					Quaternion.identity);		
+		_player = (GameObject)Instantiate(objPlayer,
+					new Vector3(_startingRoom.transform.position.x,
+							_startingRoom.transform.position.y+1,
+							_startingRoom.transform.position.z),
+					Quaternion.identity);
+		_player.GetComponent<FSMPlayer>().pause += pause;
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
-        visitNeighbors(neighborRelativePosition.Unassigned, StartingRoom);		
+        visitNeighbors(neighborRelativePosition.Unassigned, _startingRoom);		
 		
 	}
 	
@@ -143,7 +154,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		}//for		
 	}
 	
-	GameObject chooseStartingPoint()
+	GameObject chooseEdgeRoom()
 	{
 		GameObject objCurrentRoom;
 		int intRandom;
@@ -153,8 +164,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 			objCurrentRoom = (GameObject)objaRooms[intRandom];
 			objCurrentRoom = objCurrentRoom.gameObject;		
 		} while (objCurrentRoom.GetComponent<roomScript>().edgeRoom == false);
-		
-		objCurrentRoom.GetComponent<roomScript>().visited = true;					
+							
 		return objCurrentRoom;
 	}
 	
@@ -256,10 +266,20 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		return intUnvisitedCount;
 	}
 	
+	#endregion
+	
 #endregion	
 	
-#region Controller Methods
+#region Public Events
 	
+	
+#endregion	
+	
+#region Event Methods
+	private void pause(GameObject sender)
+	{
+		currentState = state.paused;	
+	}
 #endregion
 
 }
