@@ -5,16 +5,29 @@ public class FSMPlayer : MonoBehaviour {
 
 #region Class Level Attributes	
 	
-	private enum state {playing, paused, won, lost};
-	private state currentState;	
+	private enum STATE {PLAYING, PAUSED, WON, LOST};
+	private STATE currentState;	
+	private playerAIScript playerAI;
+	private ArrayList objaRooms = new ArrayList();
+#endregion
+	
+#region Public Properties
+	
+	public ArrayList Rooms
+	{
+		get{return objaRooms;}
+		set{objaRooms = value;}
+	}	
+	
 #endregion
 	
 #region FSM Methods
 	// Use this for initialization
 	void Start () 
 	{
-		currentState = state.playing;
+		currentState = STATE.PLAYING;
 		this.pause += paused_EnterState;
+		playerAI = new playerAIScript(objaRooms);
 	}
 	
 	// Update is called once per frame
@@ -22,9 +35,9 @@ public class FSMPlayer : MonoBehaviour {
 	{
 		switch(currentState)
 		{
-			case(state.playing):
+			case(STATE.PLAYING):
 				break;
-			case(state.paused):	
+			case(STATE.PAUSED):	
 				break;
 		}
 	}

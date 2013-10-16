@@ -8,20 +8,24 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	public GameObject columnObject;
 	public GameObject roomObject;
 	public GameObject wallObject;
-	public GameObject objPlayer;	
+	public GameObject playerObject;	
 
 	private ArrayList objaRooms = new ArrayList();
 
 	private float fltRoomSize = 12f;
 	public int intGridSize = 5;
 	
-	private enum neighborRelativePosition {Unassigned, Left, Right, Below, Above};
-	private enum state {makeLevel, playingGame, paused, gameWon, gameLost};	
-	private state currentState;
+	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
+	private enum STATE {SETUP, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
+	private STATE currentState;
 	
 	private GameObject _startingRoom;
 	private GameObject _endingRoom;
 	private GameObject _player;
+	
+#endregion
+	
+#region Public Properties	
 	
 	public GameObject StartingRoom
 	{
@@ -40,7 +44,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		currentState = state.makeLevel;	
+		currentState = STATE.SETUP;	
 	}
 		
 	void Update () 
@@ -48,13 +52,13 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		switch(currentState)
 		{
 			
-			case(state.makeLevel):
+			case(STATE.SETUP):
 			{
-				createGrid();
-				currentState = state.playingGame;
+				CreateGrid();
+				currentState = STATE.PLAYING;
 				break;
 			}	
-			case(state.paused):
+			case(STATE.PAUSED):
 			{
 				break;
 			}
@@ -68,28 +72,29 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	#region Grid Creation
 	
 	//generate level
-	void createGrid()
+	void CreateGrid()
 	{		
-		initializeGrid();
-		getAllNeighboringRooms();
+		InitializeGrid();
+		GetAllNeighboringRooms();
         //choose starting room
-		_startingRoom = chooseEdgeRoom();
+		_startingRoom = ChooseEdgeRoom();
 		_startingRoom.GetComponent<roomScript>().visited = true;
-		_endingRoom = chooseEdgeRoom();
+		_endingRoom = ChooseEdgeRoom();
 		EndingRoom.collider.enabled = true;
 		//create player
-		_player = (GameObject)Instantiate(objPlayer,
+		_player = (GameObject)Instantiate(playerObject,
 					new Vector3(_startingRoom.transform.position.x,
 							_startingRoom.transform.position.y+1,
-							_startingRoom.transform.position.z),
+							_startingRoom.transform.position.z+5),
 					Quaternion.identity);
+		_player.GetComponent<FSMPlayer>().Rooms = objaRooms;
 		_player.GetComponent<FSMPlayer>().pause += pause;
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
-        visitNeighbors(neighborRelativePosition.Unassigned, _startingRoom);		
+        VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED, _startingRoom);		
 		
 	}
 	
-	void initializeGrid()
+	void InitializeGrid()
 	{
 	    GameObject objCurrentRoom;
 
@@ -131,7 +136,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		}//for
 	}
 	
-	void getAllNeighboringRooms()
+	void GetAllNeighboringRooms()
 	{	
 	    GameObject objCurrentRoom;
 		
@@ -154,7 +159,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		}//for		
 	}
 	
-	GameObject chooseEdgeRoom()
+	GameObject ChooseEdgeRoom()
 	{
 		GameObject objCurrentRoom;
 		int intRandom;
@@ -169,13 +174,13 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	}
 	
 	//Recursive function to remove walls until all neighbors are visited
-    void visitNeighbors(neighborRelativePosition lastRelativePosition, GameObject objCurrentRoom)
+    void VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS lastRelativePosition, GameObject objCurrentRoom)
     {
         int intNeighborCount = objCurrentRoom.GetComponent<roomScript>().objaNeighboringRooms.Count;
 		int intUnvisitedCount = intNeighborCount;
         int intRandom;	
         GameObject objNeighbor;
-		neighborRelativePosition thisRelativePosition = neighborRelativePosition.Unassigned;
+		NEIGHBOR_RELATIVE_POSITIONS thisRelativePosition = NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED;
 		
 		//are all neighbors visited yet?
 		intUnvisitedCount = checkIfNeighborsAreVisited(objCurrentRoom,intNeighborCount);
@@ -190,7 +195,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
                 thisRelativePosition = removeWall(objCurrentRoom, objNeighbor);
 				objNeighbor.GetComponent<roomScript>().visited = true;	
 				//recurse
-				visitNeighbors(thisRelativePosition,objNeighbor);
+				VisitNeighbors(thisRelativePosition,objNeighbor);
 				intUnvisitedCount = checkIfNeighborsAreVisited(objCurrentRoom,intNeighborCount);
             }
         }
@@ -198,23 +203,23 @@ public class FSMLevelDepthFirst : MonoBehaviour {
     }
 	
 	//remove a wall between two rooms
-    neighborRelativePosition removeWall(GameObject objCurrentRoom, GameObject objNeighbor)
+    NEIGHBOR_RELATIVE_POSITIONS removeWall(GameObject objCurrentRoom, GameObject objNeighbor)
     {
 		GameObject objCurrentWall;
 		
-		neighborRelativePosition neighborPosition = neighborRelativePosition.Unassigned;
+		NEIGHBOR_RELATIVE_POSITIONS neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED;
         if(objCurrentRoom.transform.position.x < objNeighbor.transform.position.x)
-			neighborPosition = neighborRelativePosition.Right;
+			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.RIGHT;
 		else if(objCurrentRoom.transform.position.x > objNeighbor.transform.position.x)
-			neighborPosition = neighborRelativePosition.Left;	
+			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.LEFT;	
 		else if(objCurrentRoom.transform.position.z < objNeighbor.transform.position.z)
-			neighborPosition = neighborRelativePosition.Above;		
+			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.ABOVE;		
 		else if(objCurrentRoom.transform.position.z > objNeighbor.transform.position.z)
-			neighborPosition = neighborRelativePosition.Below;		
+			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.BELOW;		
 		
 		switch(neighborPosition)
 		{
-			case(neighborRelativePosition.Left):
+			case(NEIGHBOR_RELATIVE_POSITIONS.LEFT):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("leftWall").gameObject;
 				Destroy(objCurrentWall);
@@ -222,7 +227,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				Destroy(objCurrentWall);
 				break;
 			}
-			case(neighborRelativePosition.Right):
+			case(NEIGHBOR_RELATIVE_POSITIONS.RIGHT):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("rightWall").gameObject;
 				Destroy(objCurrentWall);
@@ -230,7 +235,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				Destroy(objCurrentWall);
 				break;
 			}
-			case(neighborRelativePosition.Below):
+			case(NEIGHBOR_RELATIVE_POSITIONS.BELOW):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("bottomWall").gameObject;
 				Destroy(objCurrentWall);
@@ -238,7 +243,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 				Destroy(objCurrentWall);
 				break;
 			}
-			case(neighborRelativePosition.Above):
+			case(NEIGHBOR_RELATIVE_POSITIONS.ABOVE):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("topWall").gameObject;
 				Destroy(objCurrentWall);
@@ -278,7 +283,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 #region Event Methods
 	private void pause(GameObject sender)
 	{
-		currentState = state.paused;	
+		currentState = STATE.PAUSED;	
 	}
 #endregion
 
