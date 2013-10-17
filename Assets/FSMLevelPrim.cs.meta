@@ -3,8 +3,8 @@ guid: 8f50dec415b03f04ab74aa81a74ab4e2
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - roomObject: {fileID: 100000, guid: 01af5d36265a4f84f8aafdeea5e3a083, type: 2}
-  - wallObject: {fileID: 100000, guid: 53ab09afff7cf2044a5e2cf4ea202f22, type: 2}
+  - roomObject: {fileID: 100016, guid: 5bdc078e747eb674e9fe8c9e2141b413, type: 2}
+  - wallObject: {fileID: 100000, guid: ade60fc988bd6e04bbe1fce8b28672e5, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
