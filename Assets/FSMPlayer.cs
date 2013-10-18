@@ -24,18 +24,19 @@ public class FSMPlayer : MonoBehaviour {
 #region FSM Methods
 	// Use this for initialization
 	void Start () 
-	{
+	{	
 		currentState = STATE.PLAYING;
 		this.pause += paused_EnterState;
-		playerAI = new playerAIScript(objaRooms);
+		playerAI = new playerAIScript(objaRooms);					
 	}
 	
 	// Update is called once per frame
 	void Update () 
-	{
+	{	
 		switch(currentState)
 		{
 			case(STATE.PLAYING):
+			playerAI.graph.debugDraw();				
 				break;
 			case(STATE.PAUSED):	
 				break;
@@ -43,7 +44,7 @@ public class FSMPlayer : MonoBehaviour {
 	}
 	
 	void paused_EnterState(GameObject sender)
-	{
+	{		
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
 		this.gameObject.GetComponent<FPSInputController>().enabled = false;

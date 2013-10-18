@@ -16,14 +16,17 @@ public class playerAIScript{
 	public int currentWP = 0;
 	public int startWP = 0;
 	GameObject currentNode;
-	float accuracy = 2f;
-	Vector3 direction;	
+	RaycastHit hit;
+	float accuracy = 2f;	
+	Vector3 direction;
+	int intGridSize;
 	
 	// Use this for initialization
 	public playerAIScript(ArrayList objaRooms)
 	{
 		_objaRooms = objaRooms;
 		waypoints = new GameObject[_objaRooms.Count];
+		int intGridSize = (int)Mathf.Sqrt(_objaRooms.Count);
 		for(int index = 0; index < objaRooms.Count; index++)
 		{
 			objCurrentRoom = (GameObject)objaRooms[index];
@@ -32,9 +35,30 @@ public class playerAIScript{
         	waypoints[index].transform.position = new Vector3(objCurrentRoom.transform.position.x,
 															  objCurrentRoom.transform.position.y+1,
 															  objCurrentRoom.transform.position.z+5);
-			graph.AddNode(waypoints[index],false,true);	
+			graph.AddNode(waypoints[index],true,true);	
 		}
-		 graph.debugDraw();
+		for(int i = 0; i < objaRooms.Count-1; i++)
+			{			
+					direction = waypoints[i+1].transform.position 
+								- waypoints[i].transform.position;
+    				if (Physics.Raycast(waypoints[i].transform.position, direction,out hit)&&((i+1)%intGridSize!=0)) 
+						if(hit.transform.name!="topWall"&&hit.transform.name!="rightWall")		
+						{				
+							graph.AddEdge(waypoints[i],waypoints[i+1]);
+							graph.AddEdge(waypoints[i+1],waypoints[i]);
+						}
+					if(i>objaRooms.Count-(intGridSize+1))
+						continue;
+					direction = waypoints[i+intGridSize].transform.position 
+								- waypoints[i].transform.position;
+    				if (Physics.Raycast(waypoints[i].transform.position, direction,out hit)) 
+						if(hit.transform.name!="topWall"&&hit.transform.name!="rightWall")					
+						{				
+							graph.AddEdge(waypoints[i],waypoints[i+intGridSize]);
+							graph.AddEdge(waypoints[i+intGridSize],waypoints[i]);
+						}			
+				
+			}		
 	}
 	
 	// Update is called once per frame

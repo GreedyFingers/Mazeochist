@@ -212,10 +212,8 @@ public class Graph
     {
       	//draw edges
     	for (int i = 0; i < edges.Count; i++)
-	  	{
-    		Debug.DrawLine(edges[i].startNode.id.transform.position, edges[i].endNode.id.transform.position, Color.red);
-    		Vector3 to = (edges[i].startNode.id.transform.position - edges[i].endNode.id.transform.position) * 0.05f;
-    		Debug.DrawRay(edges[i].endNode.id.transform.position, to, Color.blue);
+	  	{			
+    		Debug.DrawLine(edges[i].startNode.id.transform.position, edges[i].endNode.id.transform.position, Color.red,10);
 
 	  	}	
     }

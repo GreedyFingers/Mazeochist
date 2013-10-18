@@ -16,7 +16,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	public int intGridSize = 5;
 	
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
-	private enum STATE {SETUP, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
+	private enum STATE {SETUP_LEVEL, SETUP_PLAYER, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
 	private STATE currentState;
 	
 	private GameObject _startingRoom;
@@ -44,7 +44,7 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		currentState = STATE.SETUP;	
+		currentState = STATE.SETUP_LEVEL;	
 	}
 		
 	void Update () 
@@ -52,12 +52,27 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		switch(currentState)
 		{
 			
-			case(STATE.SETUP):
+			case(STATE.SETUP_LEVEL):
 			{
-				CreateGrid();
-				currentState = STATE.PLAYING;
+				CreateGrid();		
+				currentState = STATE.SETUP_PLAYER;		
 				break;
 			}	
+			case(STATE.SETUP_PLAYER):
+			{
+				//create player			
+				_player = (GameObject)Instantiate(playerObject,
+					new Vector3(_startingRoom.transform.position.x,
+							_startingRoom.transform.position.y+1,
+							_startingRoom.transform.position.z+5),
+					Quaternion.identity);		
+				_player.GetComponent<FSMPlayer>().Rooms = objaRooms;
+				_player.GetComponent<FSMPlayer>().pause += pause;	
+				currentState = STATE.PLAYING;				
+				break;
+			}
+			case(STATE.PLAYING):
+				break;
 			case(STATE.PAUSED):
 			{
 				break;
@@ -81,16 +96,8 @@ public class FSMLevelDepthFirst : MonoBehaviour {
 		_startingRoom.GetComponent<roomScript>().visited = true;
 		_endingRoom = ChooseEdgeRoom();
 		EndingRoom.collider.enabled = true;
-		//create player
-		_player = (GameObject)Instantiate(playerObject,
-					new Vector3(_startingRoom.transform.position.x,
-							_startingRoom.transform.position.y+1,
-							_startingRoom.transform.position.z+5),
-					Quaternion.identity);
-		_player.GetComponent<FSMPlayer>().Rooms = objaRooms;
-		_player.GetComponent<FSMPlayer>().pause += pause;
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
-        VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED, _startingRoom);		
+        VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED, _startingRoom);	
 		
 	}
 	
