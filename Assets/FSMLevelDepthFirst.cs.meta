@@ -7,6 +7,7 @@ MonoImporter:
   - roomObject: {fileID: 100016, guid: 5bdc078e747eb674e9fe8c9e2141b413, type: 2}
   - wallObject: {fileID: 100000, guid: ade60fc988bd6e04bbe1fce8b28672e5, type: 3}
   - playerObject: {fileID: 100002, guid: 9d4133d5d30b644bd87802a347eaccbe, type: 2}
+  - torchObject: {fileID: 100000, guid: 5e4a08ea2df4a0f41a81492689ac1e2f, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
