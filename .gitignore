@@ -6,8 +6,6 @@ Temp
 *.unityproj
 *.sln
 *.userprefs
-*.unity
-*.unity.meta
 *.GraphicsSettings.asset
 *.ProjectSettings.asset
 *.unity.meta
