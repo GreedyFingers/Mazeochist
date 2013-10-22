@@ -1,6 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <Basic Description>
+/// playerAIScript: Moves the player based on waypoints and edges and guides the player to the end of the dungeon
+/// by exhaustive search
+/// </Basic Description>
+/// <Dependencies>
+/// (none)
+/// </Dependencies>
+/// <Interfaces>
+/// This class interfaces with the player object and causes the player to move through the dungeon.
+/// </Interfaces>
+/// <Processes>
+/// FSMPlayer's update method calls this class's movement method to make the player move at a fixed rate
+/// </Processes> 
+/// <FSM Dependencies>
+/// (not an FSM)
+/// </FSM Dependencies>
 public class playerAIScript{
 	
 	private ArrayList _objaRooms = new ArrayList();	
@@ -20,7 +36,11 @@ public class playerAIScript{
 	float accuracy = 2f;	
 	Vector3 direction;
 	int intGridSize;
-	
+
+	//Input: ArrayList of rooms
+	//Output: (none)
+	//Called From: (constructor method)
+	//Calls: (none)
 	// Use this for initialization
 	public playerAIScript(ArrayList objaRooms)
 	{
@@ -60,8 +80,7 @@ public class playerAIScript{
 				
 			}		
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
