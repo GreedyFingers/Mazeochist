@@ -43,11 +43,13 @@ public class MenuControl : MonoBehaviour
         {
             case "PlayButton":
           	audio.Play();
+			
 			light.intensity =4;
 			Application.LoadLevel(2);
                 break;
             case "HelpButton":
-                audio.Play();
+                
+			audio.Play();
 			
 			Application.LoadLevel(4);
               
@@ -63,21 +65,26 @@ public class MenuControl : MonoBehaviour
             case "OptionsButton":
               
 		audio.Play();
+			
 			Application.LoadLevel(3);
                 break;
             case "QuitButton":
               audio.Play();
+			GamePreferences.Quit =1;
+			
 			Application.Quit();
                 break;
         
 		case "Back":
-            audio.Play();
+           audio.Play();
+		
 			Application.LoadLevel(1);
-                break;
+            
+			break;
            
 		
          
-			
+			  
 			
 			
 			

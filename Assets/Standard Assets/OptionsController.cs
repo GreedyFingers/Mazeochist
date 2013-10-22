@@ -1,3 +1,38 @@
+
+
+using UnityEngine;
+using System.Collections;
+
+public class OptionsController : MonoBehaviour {
+
+    public string MenuButtonIdentity;
+	
+	
+	
+	  void OnMouseEnter()
+    {
+	
+	
+		
+        renderer.material.color = Color.blue;
+    }
+
+    void OnMouseExit()
+    {
+        renderer.material.color = Color.white;
+    }
+	
+}
+
+
+
+
+
+
+
+
+
+/*
 using UnityEngine;
 using System.Collections;
 
@@ -104,3 +139,5 @@ public class OptionsController : MonoBehaviour {
 
 
 }
+
+*/
