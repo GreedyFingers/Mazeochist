@@ -6,7 +6,7 @@ using System.Collections;
 
 
 
-
+// controls functions of main , help , and options menu
 
 public class MenuControl : MonoBehaviour 
 {
@@ -24,7 +24,11 @@ public class MenuControl : MonoBehaviour
 	
     public string MenuButtonIdentity;
 
-    void OnMouseEnter()
+   
+	
+	
+	// when mouse hovers over turn text to blue
+	void OnMouseEnter() 
     {
 	
 	
@@ -32,7 +36,8 @@ public class MenuControl : MonoBehaviour
         renderer.material.color = Color.blue;
     }
 
-    void OnMouseExit()
+    // when mouse leaves turn text to white
+	void OnMouseExit()
     {
         renderer.material.color = Color.white;
     }
@@ -41,28 +46,36 @@ public class MenuControl : MonoBehaviour
     {
         switch (MenuButtonIdentity)
         {
-            case "PlayButton":
+            case "PlayButton": // if clicks on play then playsclick sound and loads main game
           	audio.Play();
 			
-			light.intensity =4;
+			light.intensity =4; // creates a bright flash as game starts
 			Application.LoadLevel(2);
                 break;
-            case "HelpButton":
+           
+		
+		// if clicks on Help then play click sound and load Help Menu
+		
+		case "HelpButton":
                 
 			audio.Play();
 			
 			Application.LoadLevel(4);
               
 			
-			
-			
-			
-			
-			
-			
+		
 			
 			break;
-            case "OptionsButton":
+           
+		
+		
+		
+		
+			
+		// if clicks on Options then play click sound and load options Menu
+		
+		
+		case "OptionsButton":
               
 		audio.Play();
 			
@@ -71,6 +84,14 @@ public class MenuControl : MonoBehaviour
             case "QuitButton":
               audio.Play();
 			GamePreferences.Quit =1;
+			
+			
+			
+			
+			
+				
+		// if clicks on Quit then play click sound and Quit
+			
 			
 			Application.Quit();
                 break;

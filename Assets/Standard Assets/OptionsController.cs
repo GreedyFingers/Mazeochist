@@ -12,14 +12,14 @@ public class OptionsController : MonoBehaviour {
 	  void OnMouseEnter()
     {
 	
-	
+	// when mouse hovers over turn text blue
 		
-        renderer.material.color = Color.blue;
+        renderer.material.color = Color.blue; 
     }
 
     void OnMouseExit()
     {
-        renderer.material.color = Color.white;
+        renderer.material.color = Color.white; // when mouse hovers over turn text white
     }
 	
 }

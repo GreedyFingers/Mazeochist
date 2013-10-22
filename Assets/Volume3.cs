@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+// script used to set volume of all non music sounds
 public class Volume3 : MonoBehaviour {
 
 	
@@ -13,8 +15,9 @@ public class Volume3 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//	AudioListener.volume = GamePreferences.Sound;
-	  audio.volume =  GamePreferences.Sound;
+		
+		
+	  audio.volume =  GamePreferences.Sound; // sets volume
 	
 	}
 }
