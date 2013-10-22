@@ -3,6 +3,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <Basic Description>
+/// Graph: a graph of waypoints (nodes) and edges between waypoints referenced by an object to determine pathfinding
+/// </Basic Description>
+/// <Dependencies>
+/// Node and Edge
+/// </Dependencies>
+/// <Interfaces>
+/// This class interfaces with the playerAIScript in such a way that playerAIScript uses this class to determine
+/// where the player object needs to go.
+/// </Interfaces>
+/// <Processes>
+/// This class is used each time playerAIScript needs to create a new path from a point A to a point B
+/// </Processes> 
+/// <FSM Dependencies>
+/// (not an FSM)
+/// </FSM Dependencies>
 public class Graph
 {
 	List<Edge>	edges = new List<Edge>();
@@ -10,7 +26,15 @@ public class Graph
 	List<Node>  pathList = new List<Node>();
 	
 	public Graph(){}
-	
+
+	///Input: 
+	///-object whose transform will be the location of the waypoint,
+	///-bool to remove the object's renderer,
+	///-bool to remove its collider
+	///Output: (none)
+	///Called From: playerAIScript
+	///Calls: (none)
+	///Description: adds a node to the graph of waypoints
 	public void AddNode(GameObject id, bool removeRenderer = true, bool removeCollider = true)
 	{
 		Node node = new Node(id);
@@ -22,7 +46,12 @@ public class Graph
 		if(removeRenderer)
 			GameObject.Destroy(id.renderer);
 	}
-	
+
+	///Input:  -Node from which the beginning of the edge will be
+	///Output: -Node from which the end of the edge will be
+	///Called From: playerAIScript
+	///Calls: (none)	
+	///Description: creates a unidirectional edge between waypoints
 	public void AddEdge(GameObject fromNode, GameObject toNode)
 	{
 		Node from = findNode(fromNode);
@@ -35,7 +64,12 @@ public class Graph
 			from.edgelist.Add(e);
 		}	
 	}
-	
+
+	///Input:  ID of gameobject
+	///Output: Node in graph
+	///Called From: AStar()
+	///Calls: (none)	
+	///Description: Gets node in graph by gameobject
 	Node findNode(GameObject id)
 	{
 		foreach (Node n in nodes) 
@@ -46,17 +80,23 @@ public class Graph
 		return null;
 	}
 	
-	
+	///Input:  (none)
+	///Output: Number of nodes in path
+	///Called From: AStar()
+	///Calls: (none)	
+	///Description: Gets length of path
 	public int getPathLength()
 	{
 		return pathList.Count;	
 	}
-	
+
+	///(not used)
 	public GameObject getPathPoint(int index)
 	{
 		return pathList[index].id;
 	}
-	
+
+	///(not used)
 	public void printPath()
 	{
 		foreach(Node n in pathList)
@@ -64,14 +104,17 @@ public class Graph
 			Debug.Log(n.id.name);	
 		}
 	}
-	
+
+	///Input:  
+	///-Node of graph which is the starting point for the moving gameobject
+	///-Node of graph which is the destination for the moving gameobject
+	///Called From: playerAIScript
+	///Calls: findNode(), getPathLength()	
+	///Description: Uses the A* algorithm to find the shortest path between to waypoints
 	public bool AStar(GameObject startId, GameObject endId)
 	{
 	  	Node start = findNode(startId);
 	  	Node end = findNode(endId);
-	
-		System.IO.File.AppendAllText("C:/Users/Squee/Documents/stats.csv",startId.name + ",");
-		System.IO.File.AppendAllText("C:/Users/Squee/Documents/stats.csv",endId.name + ",");
 	  
 	  	if(start == null || end == null)
 	  	{
@@ -95,7 +138,6 @@ public class Graph
 			if(thisnode.id == endId)  //path found
 			{
 				reconstructPath(start,end);
-				System.IO.File.AppendAllText("C:/Users/Squee/Documents/stats.csv",end.g+",");
 				return true;	
 			} 	
 			
@@ -138,7 +180,11 @@ public class Graph
 		
 		return false;	
 	}
-	
+
+	///Input: -start node
+	///-end node
+	///Output:(none)
+	///Called From: AStar()
 	public void reconstructPath(Node startId, Node endId)
 	{
 		pathList.Clear();
@@ -152,7 +198,12 @@ public class Graph
 		}
 		pathList.Insert(0,startId);
 	}
-	
+
+	///Input: -beginning node
+	///-ending node
+	///Output: distance between nodes
+	///Called From: AStar()
+	///Calls: (none)
     float distance(Node a, Node b)
     {
 	  float dx = a.xPos - b.xPos;
@@ -161,7 +212,11 @@ public class Graph
 	  float dist = dx*dx + dy*dy + dz*dz;
 	  return( dist );
     }
-
+	
+	//Input: List of nodes
+	//Output: Lowest "f" value in current list of nodes (refer to AStar algorithm for explanation of "f" and "g")
+	//Called From: AStar()
+	//Calls:	(none)
     int lowestF(List<Node> l)
     {
 	  float lowestf = 0;
@@ -184,7 +239,11 @@ public class Graph
 	  }
 	  return iteratorCount;
     }
-	
+
+	//Input: List of nodes
+	//Output: Lowest "g" value in current list of nodes (refer to AStar algorithm for explanation of "f" and "g")
+	//Called From: AStar()
+	//Calls: (none)	
 	int lowestG(List<Node> l)
     {
 	  float lowestg = 0;
@@ -207,7 +266,12 @@ public class Graph
 	  }
 	  return iteratorCount;
     }
-    
+ 
+	//Input: (none)
+	//Output: (none)
+	//Called From: playerAIScript()
+	//Calls: (none)
+	//Description: paints waypoints and their edges onto the screen in "scene" view for debugging purposes.
     public void debugDraw()
     {
       	//draw edges

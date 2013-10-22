@@ -1,6 +1,20 @@
 using UnityEngine;
 using System.Collections;
-
+/// <Basic Description>
+/// Controls various aspects of the player object
+/// </Basic Description>
+/// <Dependencies>
+/// FSMLevel, playerAIScript
+/// </Dependencies>
+/// <Interfaces>
+/// This player interfaces with this class when he/she pauses or collides with another object
+/// </Interfaces>
+/// <Processes>
+/// Runs concurrently with FSMLevel
+/// </Processes> 
+/// <FSM Dependencies>
+/// Once FSMLevel switches to state "SETUP PLAYER", this class's start method is run.
+/// </FSM Dependencies>
 public class FSMPlayer : MonoBehaviour {
 
 #region Class Level Attributes	
@@ -22,7 +36,11 @@ public class FSMPlayer : MonoBehaviour {
 #endregion
 	
 #region FSM Methods
-	// Use this for initialization
+
+	///Input: (none)
+	///Output: (none)
+	///Called From: (none)
+	///Calls: playerAIScript's constructor	
 	void Start () 
 	{	
 		currentState = STATE.PLAYING;
@@ -30,7 +48,10 @@ public class FSMPlayer : MonoBehaviour {
 		playerAI = new playerAIScript(objaRooms);					
 	}
 	
-	// Update is called once per frame
+	///Input: (none)
+	///Output: (none)
+	///Called From: (none)
+	///Calls: Graph::debugDraw()
 	void Update () 
 	{	
 		switch(currentState)
@@ -42,7 +63,10 @@ public class FSMPlayer : MonoBehaviour {
 				break;
 		}
 	}
-	
+
+	/// <Event handler>
+	/// Handles "pause" event
+	/// </Event handler>	
 	void paused_EnterState(GameObject sender)
 	{		
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
@@ -55,6 +79,9 @@ public class FSMPlayer : MonoBehaviour {
 	
 #region Public Events
 
+	/// <Event handler>
+	/// Handles all of the player object's possible collisions
+	/// </Event handler>	
 	void OnTriggerEnter(Collider other)
 	{
 	
