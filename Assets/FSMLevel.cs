@@ -93,9 +93,11 @@ public class FSMLevel : MonoBehaviour {
 				_player = (GameObject)Instantiate(playerObject,
 					new Vector3(_startingRoom.transform.position.x,
 							_startingRoom.transform.position.y+1,
-							_startingRoom.transform.position.z+5),
-					Quaternion.identity);		
-				_player.GetComponent<FSMPlayer>().Rooms = objaRooms;
+							_startingRoom.transform.position.z),
+					Quaternion.identity);
+				_player.GetComponent<FSMPlayer>().CurrentRoom = _startingRoom;
+				_player.GetComponent<FSMPlayer>().LastRoom = _startingRoom;
+				_player.GetComponent<FSMPlayer>().StartRoom = _startingRoom;			
 				_player.GetComponent<FSMPlayer>().pause += pause;
 				InsertTorches();			
 				currentState = STATE.PLAYING;				
@@ -136,10 +138,10 @@ public class FSMLevel : MonoBehaviour {
 		return;
 	}
 	
-	//Input: (none)
-	//Output: (none)
-	//Called From: CreateGrid()
-	//Calls: (none)
+	///Input: (none)
+	///Output: (none)
+	///Called From: CreateGrid()
+	///Calls: (none)
 	void InitializeGrid()
 	{
 	    GameObject objCurrentRoom;
@@ -294,7 +296,7 @@ public class FSMLevel : MonoBehaviour {
 				Destroy(objCurrentWall);
 				objCurrentWall = objNeighbor.transform.FindChild("rightWall").gameObject;
 				Destroy(objCurrentWall);
-				objaWalls.Remove (objCurrentWall);			
+				objaWalls.Remove (objCurrentWall);	
 				break;
 			}
 			case(NEIGHBOR_RELATIVE_POSITIONS.RIGHT):
@@ -330,6 +332,7 @@ public class FSMLevel : MonoBehaviour {
 			default:
 				break;			
 		}//switch
+		objCurrentRoom.GetComponent<roomScript>().objaAccessibleNeighbors.Add(objNeighbor);		
 		return neighborPosition;
 	}
 	
@@ -351,11 +354,14 @@ public class FSMLevel : MonoBehaviour {
 		return intUnvisitedCount;
 	}
 	
+	#endregion
+	
+	#region Create Static Models
 	///Input: (none)
 	///Output: (none)
 	///Called From: CreateGrid()
 	///Calls: (none)
-	///Description: Goes through all remaining walls, and places torches on them with a 25 percent chance each.
+	///Description: Goes through all remaining walls, and places torches on them with a 25 percent chance each.	
 	void InsertTorches()
 	{
 		GameObject objCurrentTorch;

@@ -35,7 +35,7 @@ public class Graph
 	///Called From: playerAIScript
 	///Calls: (none)
 	///Description: adds a node to the graph of waypoints
-	public void AddNode(GameObject id, bool removeRenderer = true, bool removeCollider = true)
+	public void AddNode(GameObject id, bool removeRenderer, bool removeCollider)
 	{
 		Node node = new Node(id);
 		nodes.Add(node);

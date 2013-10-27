@@ -19,12 +19,14 @@ using System.Collections;
 /// </FSM Dependencies>
 public class roomScript : MonoBehaviour {
 	public bool visited;
+	public bool playerVisited = false;
 	public bool topRoom = false;
 	public bool leftRoom = false;
 	public bool rightRoom = false;
 	public bool bottomRoom = false;
 	public bool edgeRoom = false;
 	public ArrayList objaNeighboringRooms = new ArrayList();
+	public ArrayList objaAccessibleNeighbors = new ArrayList();	
 	
 	void Start (){}
 	void Update () {

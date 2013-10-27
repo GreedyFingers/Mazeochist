@@ -20,10 +20,11 @@ using System.Collections;
 public class playerAIScript{
 	
 	private ArrayList _objaRooms = new ArrayList();	
-	GameObject objCurrentRoom;	
+	GameObject objCurrentRoom;
 	
 	private Transform target;
-	private int speed = 10;
+	private int speed = 50;
+    float rotationSpeed = 15;	
 		
 	private GameObject[] waypoints;
 	private GameObject objLevel;
@@ -33,9 +34,10 @@ public class playerAIScript{
 	public int startWP = 0;
 	GameObject currentNode;
 	RaycastHit hit;
-	float accuracy = 2f;	
+	float accuracy = 3;	
 	Vector3 direction;
 	int intGridSize;
+	private float delay = 0;	
 
 	//Input: ArrayList of rooms
 	//Output: (none)
@@ -53,8 +55,8 @@ public class playerAIScript{
 			waypoints[index] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			waypoints[index].renderer.enabled = true;	
         	waypoints[index].transform.position = new Vector3(objCurrentRoom.transform.position.x,
-															  objCurrentRoom.transform.position.y+1,
-															  objCurrentRoom.transform.position.z+5);
+															  objCurrentRoom.transform.position.y,
+															  objCurrentRoom.transform.position.z);
 			graph.AddNode(waypoints[index],true,true);	
 		}
 		for(int i = 0; i < objaRooms.Count-1; i++)
@@ -80,8 +82,47 @@ public class playerAIScript{
 				
 			}		
 	}
-
-	void Update () {
 	
+	public void moveAI(GameObject player)
+	{
+		
+		if (graph.getPathLength() == 0 || currentWP == graph.getPathLength())
+        {
+            return;
+        }
+
+        currentNode = graph.getPathPoint(currentWP);
+
+        // If we are close enough to the current waypoint, start moving toward the next
+        if (Vector3.Distance(graph.getPathPoint(currentWP).transform.position, player.transform.position) < accuracy)
+        {
+
+			if(currentWP<graph.getPathLength()-1)
+            currentWP++;
+        }
+
+        // If we are not at the end of the path
+        if (currentWP < graph.getPathLength())
+        {
+
+            direction = graph.getPathPoint(currentWP).transform.position - player.transform.position;
+			player.transform.rotation = Quaternion.Lerp(player.transform.rotation, Quaternion.LookRotation(direction),
+										rotationSpeed * Time.deltaTime);			
+            player.transform.position += speed*direction.normalized*Time.deltaTime;
+        }
+		
 	}
+	
+	public GameObject getClosestWP(GameObject character)
+	{
+		int temp = 0;
+		for(int wp = 1; wp < waypoints.Length; wp++)
+		{
+			if((waypoints[wp].transform.position - character.transform.position).magnitude <
+					(waypoints[temp].transform.position - character.transform.position).magnitude)
+					temp = wp;
+		}
+		return waypoints[temp];
+	}	
+	
 }
