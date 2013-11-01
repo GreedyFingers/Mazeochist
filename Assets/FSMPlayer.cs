@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.IO;
 /// <Basic Description>
 /// Controls various aspects of the player object
 /// </Basic Description>
@@ -22,7 +23,7 @@ public class FSMPlayer : MonoBehaviour {
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};	
 	private enum STATE {PLAYING, PAUSED, WON, LOST};
 	private STATE currentState;	
-	private playerAIScript playerAI;
+	private AI playerAI;
 	private ArrayList objaRooms = new ArrayList();
 	private GameObject _endRoom;
 	private GameObject _startRoom;
@@ -32,11 +33,14 @@ public class FSMPlayer : MonoBehaviour {
 	public bool buildNextGraph = true;
 	
 	Vector3 direction;	
-	private int speed = 50;
-    float rotationSpeed = 15;	
-	float accuracy = 4;		
+	private int speed = 15;
+    float rotationSpeed = 5;	
+	float accuracy = 3;		
 	Stack lastStack = new Stack();
 	Stack attemptedRoutes = new Stack();
+	
+	private float floatBeginningTime;
+	private float floatEndingTime;	
 #endregion
 	
 #region Public Properties
@@ -83,6 +87,7 @@ public class FSMPlayer : MonoBehaviour {
 	{	
 		currentState = STATE.PLAYING;
 		this.pause += paused_EnterState;
+		floatBeginningTime = Time.timeSinceLevelLoad;
 		//playerAI = new playerAIScript(objaRooms);					
 	}
 	
@@ -94,19 +99,7 @@ public class FSMPlayer : MonoBehaviour {
 	{	
 		switch(currentState)
 		{
-			case(STATE.PLAYING):
-				/*if(endingLoc==playerLoc)
-				{
-					buildNextGraph = true;
-				}
-				if(buildNextGraph==true)
-				{
-					playerAI.graph.AStar(playerLoc,endingLoc);		
-					buildNextGraph = false;
-				}
-				playerAI.moveAI(this.gameObject);*/
-				/*GameObject playerLoc = playerAI.getClosestWP(this.gameObject);			
-				GameObject currentLoc = playerAI.getClosestWP(_nextRoom);*/	
+			case(STATE.PLAYING):	
 				if(Vector3.Distance(transform.position, _nextRoom.transform.position) < accuracy)		
 				{
 					GetNextRoom();			
@@ -116,6 +109,16 @@ public class FSMPlayer : MonoBehaviour {
 			case(STATE.PAUSED):	
 				break;
 			case(STATE.WON):	
+				floatEndingTime = Time.timeSinceLevelLoad;
+        		if (System.IO.File.Exists("C:/Users/Squee/Documents/stats.csv")) 
+        		{
+            		// Create a file to write to. 
+            		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
+            		{
+            		    sw.WriteLine(floatEndingTime-floatBeginningTime + ";");
+            		}	
+					Application.LoadLevel(Application.loadedLevel);					
+        		}					
 				break;			
 		}
 	}
@@ -145,6 +148,11 @@ public class FSMPlayer : MonoBehaviour {
 		switch(other.name)
 		{
 			case("objRoom(Clone)"):	
+				if(other.GetComponent<roomScript>().endRoom == false)
+				{
+					playerEnteredNewRoom(this.gameObject);
+					break;
+				}
 				this.GetComponent<InGameMenu>().enabled = true;
 				pause(this.gameObject);
 				this.currentState = STATE.WON;
@@ -173,11 +181,10 @@ public class FSMPlayer : MonoBehaviour {
 	void movePlayer()
 	{
             direction = _nextRoom.transform.position - transform.position;
+			direction.y = 0;
 			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction),
-										rotationSpeed * Time.deltaTime);		
-			transform.position += new Vector3(speed*direction.normalized.x*Time.deltaTime,
-											 0,
-											 speed*direction.normalized.z*Time.deltaTime);
+										rotationSpeed * Time.deltaTime);	
+            transform.position += speed*direction.normalized*Time.deltaTime;
             //transform.position.x += speed*direction.normalized.x*Time.deltaTime;		
             //transform.position.z += speed*direction.normalized.z*Time.deltaTime;		
 	}	
@@ -188,5 +195,6 @@ public class FSMPlayer : MonoBehaviour {
 	public delegate void EventHandler(GameObject e);
 	
 	public event EventHandler pause; 
+	public event EventHandler playerEnteredNewRoom;
 #endregion
 }

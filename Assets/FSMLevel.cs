@@ -31,6 +31,7 @@ public class FSMLevel : MonoBehaviour {
 	public GameObject wallObject;
 	public GameObject playerObject;	
 	public GameObject torchObject;
+	public GameObject enemyObject;
 
 	private ArrayList objaRooms = new ArrayList();
 	private ArrayList objaWalls = new ArrayList();
@@ -39,12 +40,13 @@ public class FSMLevel : MonoBehaviour {
 	public int intGridSize = 5;
 	
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
-	private enum STATE {SETUP_LEVEL, SETUP_PLAYER, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
+	private enum STATE {SETUP_LEVEL, SETUP_PLAYER,SETUP_ENEMY, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
 	private STATE currentState;
 	
 	private GameObject _startingRoom;
 	private GameObject _endingRoom;
 	private GameObject _player;
+	private GameObject _enemy;	
 	
 #endregion
 	
@@ -99,8 +101,28 @@ public class FSMLevel : MonoBehaviour {
 				_player.GetComponent<FSMPlayer>().LastRoom = _startingRoom;
 				_player.GetComponent<FSMPlayer>().StartRoom = _startingRoom;			
 				_player.GetComponent<FSMPlayer>().pause += pause;
-				InsertTorches();			
-				currentState = STATE.PLAYING;				
+				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
+				InsertTorches();						
+				currentState = STATE.SETUP_ENEMY;				
+				break;
+			}
+			case(STATE.SETUP_ENEMY):
+			{
+				if(Time.timeSinceLevelLoad < 10)
+					break;
+				else
+				{
+					_enemy = (GameObject)Instantiate(enemyObject,
+					new Vector3(_startingRoom.transform.position.x,
+							_startingRoom.transform.position.y+3,
+							_startingRoom.transform.position.z),
+					Quaternion.identity);				
+					_enemy.GetComponent<FSMEnemy>().Rooms = objaRooms;
+					_enemy.GetComponent<FSMEnemy>().EndRoom = _endingRoom;
+					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom -= emptyEventMethod;					
+					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += playerEnteredNewRoom;				
+					currentState = STATE.PLAYING;	
+				}
 				break;
 			}
 			case(STATE.PLAYING):
@@ -132,7 +154,7 @@ public class FSMLevel : MonoBehaviour {
 		_startingRoom = ChooseEdgeRoom();
 		_startingRoom.GetComponent<roomScript>().visited = true;
 		_endingRoom = ChooseEdgeRoom();
-		_endingRoom.collider.enabled = true;
+		_endingRoom.GetComponent<roomScript>().endRoom = true;
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
         VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED, _startingRoom);	
 		return;
@@ -397,6 +419,13 @@ public class FSMLevel : MonoBehaviour {
 	{
 		currentState = STATE.PAUSED;	
 	}
+	
+	private void emptyEventMethod(GameObject sender){}
+	
+	private void playerEnteredNewRoom(GameObject sender)
+	{
+		_enemy.GetComponent<FSMEnemy>().recalculatePath();	
+	}	
 #endregion
 
 }

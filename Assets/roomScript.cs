@@ -25,6 +25,7 @@ public class roomScript : MonoBehaviour {
 	public bool rightRoom = false;
 	public bool bottomRoom = false;
 	public bool edgeRoom = false;
+	public bool endRoom = false;
 	public ArrayList objaNeighboringRooms = new ArrayList();
 	public ArrayList objaAccessibleNeighbors = new ArrayList();	
 	

@@ -2,7 +2,7 @@
 using System.Collections;
 
 /// <Basic Description>
-/// playerAIScript: Moves the player based on waypoints and edges and guides the player to the end of the dungeon
+/// AI: Moves the player based on waypoints and edges and guides the player to the end of the dungeon
 /// by exhaustive search
 /// </Basic Description>
 /// <Dependencies>
@@ -17,14 +17,13 @@ using System.Collections;
 /// <FSM Dependencies>
 /// (not an FSM)
 /// </FSM Dependencies>
-public class playerAIScript{
+public class AI{
 	
 	private ArrayList _objaRooms = new ArrayList();	
 	GameObject objCurrentRoom;
 	
 	private Transform target;
-	private int speed = 50;
-    float rotationSpeed = 15;	
+	private int speed = 4;	
 		
 	private GameObject[] waypoints;
 	private GameObject objLevel;
@@ -34,7 +33,7 @@ public class playerAIScript{
 	public int startWP = 0;
 	GameObject currentNode;
 	RaycastHit hit;
-	float accuracy = 3;	
+	float accuracy = 4;	
 	Vector3 direction;
 	int intGridSize;
 	private float delay = 0;	
@@ -44,7 +43,7 @@ public class playerAIScript{
 	//Called From: (constructor method)
 	//Calls: (none)
 	// Use this for initialization
-	public playerAIScript(ArrayList objaRooms)
+	public AI(ArrayList objaRooms)
 	{
 		_objaRooms = objaRooms;
 		waypoints = new GameObject[_objaRooms.Count];
@@ -83,7 +82,7 @@ public class playerAIScript{
 			}		
 	}
 	
-	public void moveAI(GameObject player)
+	public void moveAI(GameObject AIobject)
 	{
 		
 		if (graph.getPathLength() == 0 || currentWP == graph.getPathLength())
@@ -94,7 +93,7 @@ public class playerAIScript{
         currentNode = graph.getPathPoint(currentWP);
 
         // If we are close enough to the current waypoint, start moving toward the next
-        if (Vector3.Distance(graph.getPathPoint(currentWP).transform.position, player.transform.position) < accuracy)
+        if (Vector3.Distance(graph.getPathPoint(currentWP).transform.position, AIobject.transform.position) < accuracy)
         {
 
 			if(currentWP<graph.getPathLength()-1)
@@ -105,10 +104,10 @@ public class playerAIScript{
         if (currentWP < graph.getPathLength())
         {
 
-            direction = graph.getPathPoint(currentWP).transform.position - player.transform.position;
-			player.transform.rotation = Quaternion.Lerp(player.transform.rotation, Quaternion.LookRotation(direction),
-										rotationSpeed * Time.deltaTime);			
-            player.transform.position += speed*direction.normalized*Time.deltaTime;
+            direction = graph.getPathPoint(currentWP).transform.position - AIobject.transform.position;
+            AIobject.rigidbody.AddForce(direction.x*9,0,direction.z*9);
+			if (AIobject.rigidbody.velocity.magnitude > speed)
+    			AIobject.rigidbody.velocity = AIobject.rigidbody.velocity.normalized * speed;
         }
 		
 	}
@@ -124,5 +123,9 @@ public class playerAIScript{
 		}
 		return waypoints[temp];
 	}	
+	public GameObject getCurrentWP()
+	{
+		return graph.getPathPoint(currentWP);	
+	}
 	
 }
