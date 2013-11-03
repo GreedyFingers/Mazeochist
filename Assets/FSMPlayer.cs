@@ -25,19 +25,13 @@ public class FSMPlayer : MonoBehaviour {
 	private STATE currentState;	
 	private AI playerAI;
 	private ArrayList objaRooms = new ArrayList();
-	private GameObject _endRoom;
-	private GameObject _startRoom;
-	private GameObject _lastRoom;	
 	private GameObject _nextRoom;
-	private GameObject _currentRoom;
-	public bool buildNextGraph = true;
 	
 	Vector3 direction;	
 	private int speed = 60;
     float rotationSpeed = 5;	
 	float accuracy = 3;		
 	Stack lastStack = new Stack();
-	Stack attemptedRoutes = new Stack();
 	
 	private float floatBeginningTime;
 	private float floatEndingTime;	
@@ -49,30 +43,12 @@ public class FSMPlayer : MonoBehaviour {
 	{
 		get{return objaRooms;}
 		set{objaRooms = value;}
-	}	
-	
-	public GameObject EndRoom
-	{
-		get{return _endRoom;}
-		set{_endRoom = value;}		
-	}
-	
-	public GameObject StartRoom
-	{
-		get{return _startRoom;}
-		set{_startRoom = value;}		
-	}	
+	}		
 	
 	public GameObject CurrentRoom
 	{
 		get{return _nextRoom;}
 		set{_nextRoom = value;}		
-	}
-	
-	public GameObject LastRoom
-	{
-		get{return _lastRoom;}
-		set{_lastRoom = value;}		
 	}	
 	
 	public float TotalTimeElapsed
@@ -160,7 +136,6 @@ public class FSMPlayer : MonoBehaviour {
 	
 	void GetNextRoom()
 	{		
-		GameObject temp;
 		foreach(GameObject neighboringRoom in _nextRoom.GetComponent<roomScript>().objaAccessibleNeighbors)
 		{
 			if(neighboringRoom.GetComponent<roomScript>().playerVisited == false)

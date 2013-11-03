@@ -37,7 +37,7 @@ public class FSMLevel : MonoBehaviour {
 	private ArrayList objaWalls = new ArrayList();
 
 	private float fltRoomSize = 12f;
-	public int intGridSize = 5;
+	public int intGridSize;
 	
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
 	private enum STATE {SETUP_LEVEL, SETUP_PLAYER,SETUP_ENEMY, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
@@ -52,16 +52,6 @@ public class FSMLevel : MonoBehaviour {
 	
 #region Public Properties	
 	
-	public GameObject StartingRoom
-	{
-		get {return _startingRoom;}
-		set {_startingRoom = value;}
-	}
-	public GameObject EndingRoom
-	{
-		get {return _endingRoom;}
-		set {_endingRoom = value;}
-	}
 	public GameObject Player
 	{
 		get {return _player;}
@@ -101,9 +91,7 @@ public class FSMLevel : MonoBehaviour {
 							_startingRoom.transform.position.y+1,
 							_startingRoom.transform.position.z),
 					Quaternion.identity);
-				_player.GetComponent<FSMPlayer>().CurrentRoom = _startingRoom;
-				_player.GetComponent<FSMPlayer>().LastRoom = _startingRoom;
-				_player.GetComponent<FSMPlayer>().StartRoom = _startingRoom;			
+				_player.GetComponent<FSMPlayer>().CurrentRoom = _startingRoom;		
 				_player.GetComponent<FSMPlayer>().pause += pause;
 				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
 				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;			
@@ -161,7 +149,7 @@ public class FSMLevel : MonoBehaviour {
 		_endingRoom = ChooseEdgeRoom();
 		_endingRoom.GetComponent<roomScript>().endRoom = true;
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
-        VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED, _startingRoom);	
+        VisitNeighbors(_startingRoom);	
 		return;
 	}
 	
@@ -267,13 +255,12 @@ public class FSMLevel : MonoBehaviour {
 	///Called From: CreateGrid()
 	///Calls: (itself), removeWall()
 	///Recursive function to remove walls until all neighbors are visited	
-    void VisitNeighbors(NEIGHBOR_RELATIVE_POSITIONS lastRelativePosition, GameObject objCurrentRoom)
+    void VisitNeighbors(GameObject objCurrentRoom)
     {
         int intNeighborCount = objCurrentRoom.GetComponent<roomScript>().objaNeighboringRooms.Count;
 		int intUnvisitedCount = intNeighborCount;
         int intRandom;	
         GameObject objNeighbor;
-		NEIGHBOR_RELATIVE_POSITIONS thisRelativePosition = NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED;
 		
 		//are all neighbors visited yet?
 		intUnvisitedCount = CheckIfNeighborsAreVisited(objCurrentRoom,intNeighborCount);
@@ -285,10 +272,10 @@ public class FSMLevel : MonoBehaviour {
                 continue;
             else
             {
-                thisRelativePosition = removeWall(objCurrentRoom, objNeighbor);
+                removeWall(objCurrentRoom, objNeighbor);
 				objNeighbor.GetComponent<roomScript>().visited = true;	
 				//recurse
-				VisitNeighbors(thisRelativePosition,objNeighbor);
+				VisitNeighbors(objNeighbor);
 				intUnvisitedCount = CheckIfNeighborsAreVisited(objCurrentRoom,intNeighborCount);
             }
         }
@@ -300,7 +287,7 @@ public class FSMLevel : MonoBehaviour {
 	///Called From: VisitNeighbors()
 	///Calls: (none)
 	///remove a wall between two rooms	
-    NEIGHBOR_RELATIVE_POSITIONS removeWall(GameObject objCurrentRoom, GameObject objNeighbor)
+    private void removeWall(GameObject objCurrentRoom, GameObject objNeighbor)
     {
 		GameObject objCurrentWall;
 		
@@ -360,7 +347,7 @@ public class FSMLevel : MonoBehaviour {
 				break;			
 		}//switch
 		objCurrentRoom.GetComponent<roomScript>().objaAccessibleNeighbors.Add(objNeighbor);		
-		return neighborPosition;
+		return;
 	}
 	
 	///Input: current room, and also number of neighbors

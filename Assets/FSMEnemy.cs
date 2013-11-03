@@ -4,14 +4,11 @@ using System.Collections;
 public class FSMEnemy : MonoBehaviour {
 	
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};	
-	private enum STATE {CREATE_GRAPH, PLAYING, PAUSED, WON, LOST};
+	private enum STATE {CREATE_AI, PURSUING, PAUSED, WON, LOST};
 	private STATE currentState;	
 	private AI enemyAI;
 	private ArrayList objaRooms = new ArrayList();
-	private GameObject _endRoom;
-	private GameObject _startRoom;
-	private GameObject _lastRoom;	
-	private GameObject _currentRoom;
+	private GameObject _endRoom;	
 	public bool buildNextGraph = true;	
 	private GameObject _player;
 	
@@ -26,11 +23,6 @@ public class FSMEnemy : MonoBehaviour {
 		get{return objaRooms;}
 		set{objaRooms = value;}		
 	}	
-	public GameObject StartRoom
-	{
-		get{return _startRoom;}
-		set{_startRoom = value;}		
-	}
 	public GameObject EndRoom
 	{
 		get{return _endRoom;}
@@ -38,7 +30,7 @@ public class FSMEnemy : MonoBehaviour {
 	}	
 	// Use this for initialization
 	void Start () {
-		currentState = STATE.CREATE_GRAPH;
+		currentState = STATE.CREATE_AI;
 		this.pause += paused_EnterState;
 		_player = GameObject.Find("Player(Clone)");
 	}
@@ -47,14 +39,14 @@ public class FSMEnemy : MonoBehaviour {
 	void Update () {
 		switch(currentState)
 		{
-			case(STATE.CREATE_GRAPH):
+			case(STATE.CREATE_AI):
 				if(objaRooms.Count!=0)
 				{
 					enemyAI = new AI(objaRooms);			
-					currentState = STATE.PLAYING;
+					currentState = STATE.PURSUING;
 				}
 				break;
-			case(STATE.PLAYING):
+			case(STATE.PURSUING):
 				if(buildNextGraph == true)
 				{
 					_enemyLoc = enemyAI.getClosestWP(this.gameObject);			
