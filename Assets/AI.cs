@@ -23,7 +23,7 @@ public class AI{
 	GameObject objCurrentRoom;
 	
 	private Transform target;
-	private int speed = 4;	
+	private int speed = 10;	
 		
 	private GameObject[] waypoints;
 	private GameObject objLevel;
@@ -33,7 +33,7 @@ public class AI{
 	public int startWP = 0;
 	GameObject currentNode;
 	RaycastHit hit;
-	float accuracy = 4;	
+	float accuracy = 3;	
 	Vector3 direction;
 	int intGridSize;
 	private float delay = 0;	
@@ -125,7 +125,7 @@ public class AI{
 	}	
 	public GameObject getCurrentWP()
 	{
-		return graph.getPathPoint(currentWP);	
+		return graph.getPathPoint(startWP);	
 	}
 	
 }

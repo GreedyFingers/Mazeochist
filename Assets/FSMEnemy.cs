@@ -18,6 +18,8 @@ public class FSMEnemy : MonoBehaviour {
 	private GameObject _enemyLoc;
 	private GameObject _playerLoc;
 	private GameObject _endLoc;
+	private Vector3 direction;
+	private RaycastHit hit;
 	
 	public ArrayList Rooms
 	{
@@ -53,13 +55,13 @@ public class FSMEnemy : MonoBehaviour {
 				}
 				break;
 			case(STATE.PLAYING):
-			if(buildNextGraph == true)
-			{
-				_enemyLoc = enemyAI.getClosestWP(this.gameObject);			
-				_endLoc = enemyAI.getClosestWP(_player);					
-				enemyAI.graph.AStar(_enemyLoc,_endLoc);
-				buildNextGraph = false;
-			}
+				if(buildNextGraph == true)
+				{
+					_enemyLoc = enemyAI.getClosestWP(this.gameObject);			
+					_endLoc = enemyAI.getClosestWP(_player);					
+					enemyAI.graph.AStar(_enemyLoc,_endLoc);
+					buildNextGraph = false;
+				}
 				enemyAI.moveAI(this.gameObject);				
 				break;			
 			case(STATE.PAUSED):	
@@ -73,10 +75,15 @@ public class FSMEnemy : MonoBehaviour {
 	
 	public void recalculatePath()
 	{
-		/*print(enemyAI.currentWP);
+		direction = _player.transform.position - this.transform.position;
+    	if (Physics.Raycast(this.transform.position, direction,out hit)) 
+		{
+        	if (hit.transform == _player) 
+        		return;
+		}
 		_enemyLoc = enemyAI.getCurrentWP();			
-		_playerLoc = enemyAI.getClosestWP(_endRoom);			
-		enemyAI.graph.AStar(_enemyLoc,_playerLoc);	*/	
+		_playerLoc = enemyAI.getClosestWP(_player);			
+		enemyAI.graph.AStar(_enemyLoc,_playerLoc);		
 	}
 		
 #region Custom Events

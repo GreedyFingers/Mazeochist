@@ -33,7 +33,7 @@ public class FSMPlayer : MonoBehaviour {
 	public bool buildNextGraph = true;
 	
 	Vector3 direction;	
-	private int speed = 15;
+	private int speed = 12;
     float rotationSpeed = 5;	
 	float accuracy = 3;		
 	Stack lastStack = new Stack();
