@@ -23,7 +23,7 @@ public class AI{
 	GameObject objCurrentRoom;
 	
 	private Transform target;
-	private int speed = 10;	
+	private int speed = 8;	
 		
 	private GameObject[] waypoints;
 	private GameObject objLevel;

@@ -33,7 +33,7 @@ public class FSMPlayer : MonoBehaviour {
 	public bool buildNextGraph = true;
 	
 	Vector3 direction;	
-	private int speed = 12;
+	private int speed = 60;
     float rotationSpeed = 5;	
 	float accuracy = 3;		
 	Stack lastStack = new Stack();
@@ -75,6 +75,11 @@ public class FSMPlayer : MonoBehaviour {
 		set{_lastRoom = value;}		
 	}	
 	
+	public float TotalTimeElapsed
+	{
+		get{return floatEndingTime-floatBeginningTime;}
+	}
+	
 #endregion
 	
 #region FSM Methods
@@ -108,18 +113,10 @@ public class FSMPlayer : MonoBehaviour {
 				break;			
 			case(STATE.PAUSED):	
 				break;
-			case(STATE.WON):	
-				floatEndingTime = Time.timeSinceLevelLoad;
-        		if (System.IO.File.Exists("C:/Users/Squee/Documents/stats.csv")) 
-        		{
-            		// Create a file to write to. 
-            		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
-            		{
-            		    sw.WriteLine(floatEndingTime-floatBeginningTime + ";");
-            		}	
-					Application.LoadLevel(Application.loadedLevel);					
-        		}					
-				break;			
+			case(STATE.WON):		
+				floatEndingTime = Time.timeSinceLevelLoad;	
+				gameWon(this.gameObject);
+				break;
 		}
 	}
 	
@@ -196,5 +193,6 @@ public class FSMPlayer : MonoBehaviour {
 	
 	public event EventHandler pause; 
 	public event EventHandler playerEnteredNewRoom;
+	public event EventHandler gameWon;
 #endregion
 }

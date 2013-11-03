@@ -57,10 +57,14 @@ public class FSMLevel : MonoBehaviour {
 		get {return _startingRoom;}
 		set {_startingRoom = value;}
 	}
-	private GameObject EndingRoom
+	public GameObject EndingRoom
 	{
 		get {return _endingRoom;}
 		set {_endingRoom = value;}
+	}
+	public GameObject Player
+	{
+		get {return _player;}
 	}
 	
 #endregion
@@ -102,6 +106,7 @@ public class FSMLevel : MonoBehaviour {
 				_player.GetComponent<FSMPlayer>().StartRoom = _startingRoom;			
 				_player.GetComponent<FSMPlayer>().pause += pause;
 				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
+				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;			
 				InsertTorches();						
 				currentState = STATE.SETUP_ENEMY;				
 				break;
@@ -405,8 +410,10 @@ public class FSMLevel : MonoBehaviour {
 	
 #endregion	
 	
-#region Public Events
+#region Custom Events
 	
+	public delegate void EventHandler(GameObject e);	
+	public event EventHandler gameWon;	
 	
 #endregion	
 	
@@ -426,6 +433,11 @@ public class FSMLevel : MonoBehaviour {
 	{
 		_enemy.GetComponent<FSMEnemy>().recalculatePath();	
 	}	
+	
+	private void player_gameWon(GameObject sender)
+	{
+		gameWon(this.gameObject);
+	}
 #endregion
 
 }
