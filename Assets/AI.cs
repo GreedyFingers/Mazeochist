@@ -33,10 +33,9 @@ public class AI{
 	public int startWP = 0;
 	GameObject currentNode;
 	RaycastHit hit;
-	float accuracy = 3;	
+	float accuracy = 4;	
 	Vector3 direction;
 	int intGridSize;
-	private float delay = 0;	
 
 	//Input: ArrayList of rooms
 	//Output: (none)
@@ -90,8 +89,6 @@ public class AI{
             return;
         }
 
-        currentNode = graph.getPathPoint(currentWP);
-
         // If we are close enough to the current waypoint, start moving toward the next
         if (Vector3.Distance(graph.getPathPoint(currentWP).transform.position, AIobject.transform.position) < accuracy)
         {
@@ -105,7 +102,7 @@ public class AI{
         {
 
             direction = graph.getPathPoint(currentWP).transform.position - AIobject.transform.position;
-            AIobject.rigidbody.AddForce(direction.x*9,0,direction.z*9);
+            AIobject.rigidbody.AddForce(direction.x*12,0,direction.z*12);
 			if (AIobject.rigidbody.velocity.magnitude > speed)
     			AIobject.rigidbody.velocity = AIobject.rigidbody.velocity.normalized * speed;
         }

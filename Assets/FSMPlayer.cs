@@ -28,13 +28,15 @@ public class FSMPlayer : MonoBehaviour {
 	private GameObject _nextRoom;
 	
 	Vector3 direction;	
-	private int speed = 60;
+	private int speed = 10;
     float rotationSpeed = 5;	
 	float accuracy = 3;		
 	Stack lastStack = new Stack();
 	
 	private float floatBeginningTime;
 	private float floatEndingTime;	
+	private float pauseDelay = 1;
+	private float pauseTime;
 #endregion
 	
 #region Public Properties
@@ -67,7 +69,6 @@ public class FSMPlayer : MonoBehaviour {
 	void Start () 
 	{	
 		currentState = STATE.PLAYING;
-		this.pause += paused_EnterState;
 		floatBeginningTime = Time.timeSinceLevelLoad;
 		//playerAI = new playerAIScript(objaRooms);					
 	}
@@ -81,17 +82,21 @@ public class FSMPlayer : MonoBehaviour {
 		switch(currentState)
 		{
 			case(STATE.PLAYING):	
+  				if (Input.GetKeyDown("escape"))		
+					paused_EnterState(this.gameObject);
 				if(Vector3.Distance(transform.position, _nextRoom.transform.position) < accuracy)		
 				{
 					GetNextRoom();			
 				}
-				movePlayer();							
+				//movePlayer();							
 				break;			
 			case(STATE.PAUSED):	
+				if(Input.GetKeyDown("escape"))
+					paused_ExitState(this.gameObject);
 				break;
 			case(STATE.WON):		
 				floatEndingTime = Time.timeSinceLevelLoad;	
-				gameWon(this.gameObject);
+				gameLost(this.gameObject);
 				break;
 		}
 	}
@@ -101,12 +106,52 @@ public class FSMPlayer : MonoBehaviour {
 	/// Handles "pause" event
 	/// </Event handler>	
 	void paused_EnterState(GameObject sender)
-	{		
+	{	
+		pauseTime = Time.timeSinceLevelLoad;
+		this.currentState = STATE.PAUSED;	
+		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_PAUSED;		
+		this.GetComponent<InGameMenu>().enabled = true;		
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
 		this.gameObject.GetComponent<FPSInputController>().enabled = false;
-		Camera.main.GetComponent<MouseLook>().enabled = false;		
+		Camera.main.GetComponent<MouseLook>().enabled = false;	
+		Time.timeScale = 0;		
 	}
+	
+	void lost_EnterState(GameObject sender)
+	{
+		this.currentState = STATE.LOST;		
+		this.GetComponent<InGameMenu>().enabled = true;
+		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_LOST;
+		this.gameObject.GetComponent<MouseLook>().enabled = false;
+		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
+		this.gameObject.GetComponent<FPSInputController>().enabled = false;
+		Camera.main.GetComponent<MouseLook>().enabled = false;	
+		gameLost(this.gameObject);			
+	}
+	
+	void won_EnterState(GameObject sender)
+	{
+		this.currentState = STATE.WON;		
+		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_WON;		
+		this.GetComponent<InGameMenu>().enabled = true;
+		this.gameObject.GetComponent<MouseLook>().enabled = false;
+		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
+		this.gameObject.GetComponent<FPSInputController>().enabled = false;
+		Camera.main.GetComponent<MouseLook>().enabled = false;
+		gameWon(this.gameObject);
+	}	
+
+	void paused_ExitState(GameObject sender)
+	{	
+		this.currentState = STATE.PLAYING;
+		this.GetComponent<InGameMenu>().enabled = false;
+		this.gameObject.GetComponent<MouseLook>().enabled = true;
+		this.gameObject.GetComponent<CharacterMotor>().enabled = true;
+		this.gameObject.GetComponent<FPSInputController>().enabled = true;
+		Camera.main.GetComponent<MouseLook>().enabled = true;
+		Time.timeScale = 1;		
+	}	
 	
 #endregion
 	
@@ -117,7 +162,6 @@ public class FSMPlayer : MonoBehaviour {
 	/// </Event handler>	
 	void OnTriggerEnter(Collider other)
 	{
-	
 		switch(other.name)
 		{
 			case("objRoom(Clone)"):	
@@ -126,9 +170,10 @@ public class FSMPlayer : MonoBehaviour {
 					playerEnteredNewRoom(this.gameObject);
 					break;
 				}
-				this.GetComponent<InGameMenu>().enabled = true;
-				pause(this.gameObject);
-				this.currentState = STATE.WON;
+				won_EnterState(this.gameObject);
+				break;
+		case("enemyCollider"):
+				lost_EnterState(this.gameObject);
 				break;
 		}
 		
@@ -166,8 +211,11 @@ public class FSMPlayer : MonoBehaviour {
 #region Custom Events
 	public delegate void EventHandler(GameObject e);
 	
-	public event EventHandler pause; 
+	public event EventHandler gameWon; 
 	public event EventHandler playerEnteredNewRoom;
-	public event EventHandler gameWon;
+	public event EventHandler gameLost;
+	public event EventHandler pauseGame;
+	public event EventHandler unpauseGame;			
 #endregion
 }
+

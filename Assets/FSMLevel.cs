@@ -92,16 +92,16 @@ public class FSMLevel : MonoBehaviour {
 							_startingRoom.transform.position.z),
 					Quaternion.identity);
 				_player.GetComponent<FSMPlayer>().CurrentRoom = _startingRoom;		
-				_player.GetComponent<FSMPlayer>().pause += pause;
+				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;
 				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
-				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;			
+				_player.GetComponent<FSMPlayer>().gameLost += player_gameLost;			
 				InsertTorches();						
 				currentState = STATE.SETUP_ENEMY;				
 				break;
 			}
 			case(STATE.SETUP_ENEMY):
 			{
-				if(Time.timeSinceLevelLoad < 10)
+				if(Time.timeSinceLevelLoad < 5)
 					break;
 				else
 				{
@@ -401,6 +401,7 @@ public class FSMLevel : MonoBehaviour {
 	
 	public delegate void EventHandler(GameObject e);	
 	public event EventHandler gameWon;	
+	public event EventHandler gameLost;		
 	
 #endregion	
 	
@@ -409,9 +410,10 @@ public class FSMLevel : MonoBehaviour {
 	/// <Event handler>
 	/// Handles FSMPlayer's "pause" event
 	/// </Event handler>
-	private void pause(GameObject sender)
+	private void player_gameWon(GameObject sender)
 	{
-		currentState = STATE.PAUSED;	
+		currentState = STATE.GAME_WON;
+		gameWon(this.gameObject);	
 	}
 	
 	private void emptyEventMethod(GameObject sender){}
@@ -421,10 +423,11 @@ public class FSMLevel : MonoBehaviour {
 		_enemy.GetComponent<FSMEnemy>().recalculatePath();	
 	}	
 	
-	private void player_gameWon(GameObject sender)
+	private void player_gameLost(GameObject sender)
 	{
-		gameWon(this.gameObject);
-	}
+		currentState = STATE.GAME_LOST;	
+		gameLost(this.gameObject);				
+	}	
 #endregion
 
 }

@@ -29,14 +29,15 @@ public class FSMEnemy : MonoBehaviour {
 		set{_endRoom = value;}		
 	}	
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		currentState = STATE.CREATE_AI;
-		this.pause += paused_EnterState;
 		_player = GameObject.Find("Player(Clone)");
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
 		switch(currentState)
 		{
 			case(STATE.CREATE_AI):
@@ -59,10 +60,6 @@ public class FSMEnemy : MonoBehaviour {
 			case(STATE.PAUSED):	
 				break;
 		}
-	}
-		
-	void paused_EnterState(GameObject sender)
-	{				
 	}		
 	
 	public void recalculatePath()
@@ -76,11 +73,5 @@ public class FSMEnemy : MonoBehaviour {
 		_enemyLoc = enemyAI.getCurrentWP();			
 		_playerLoc = enemyAI.getClosestWP(_player);			
 		enemyAI.graph.AStar(_enemyLoc,_playerLoc);		
-	}
-		
-#region Custom Events
-	public delegate void EventHandler(GameObject e);
-	
-	public event EventHandler pause; 
-#endregion		
+	} 	
 }

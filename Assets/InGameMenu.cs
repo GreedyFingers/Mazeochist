@@ -15,8 +15,15 @@ using System.Collections;
 /// </FSM Dependencies>
 public class InGameMenu : MonoBehaviour {
 	
+	public enum WINDOW_TYPE {GAME_WON, GAME_LOST, GAME_PAUSED};	
 	private Rect windowRect = new Rect(Screen.width/4, Screen.height/4,Screen.width/2, Screen.height/2);	
-
+	private WINDOW_TYPE _currentWindow; 
+	
+	public WINDOW_TYPE CurrentWindow
+	{
+		get{return _currentWindow;}
+		set{_currentWindow = value;}
+	}
 	///Input: (none)
 	///Output: (none)
 	///Called From: Called upon instantiation of the object
@@ -40,10 +47,25 @@ public class InGameMenu : MonoBehaviour {
 	//Calls:
 	void OnGUI()
 	{
-		
-		windowRect = GUI.Window(0,windowRect,DoMyWindow,"Congratulations!");
+		switch(_currentWindow)
+		{
+			case(WINDOW_TYPE.GAME_WON):
+			{
+				windowRect = GUI.Window(0,windowRect,DoMyWindow,"Congratulations!");
+				break;
+			}
+			case(WINDOW_TYPE.GAME_LOST):
+			{
+				windowRect = GUI.Window(0,windowRect,DoMyWindow,"Too bad!");			
+				break;
+			}
+			case(WINDOW_TYPE.GAME_PAUSED):
+			{
+				windowRect = GUI.Window(0,windowRect,DoMyWindow,"Game paused");
+				break;
+			}
 		Screen.showCursor = true;
-		
+		}
 	}
 	
 	//Input: (none)
@@ -52,8 +74,9 @@ public class InGameMenu : MonoBehaviour {
 	//Calls: (none)
     void DoMyWindow(int windowID) 
 	{
-        if (GUI.Button(new Rect((windowRect.width/2)-(windowRect.width/16), (windowRect.height/2)-(windowRect.height/16), windowRect.width/8, windowRect.height/8), "OK"))
-			Application.Quit();
+		if(_currentWindow != WINDOW_TYPE.GAME_PAUSED)
+        	if (GUI.Button(new Rect((windowRect.width/2)-(windowRect.width/16), (windowRect.height/2)-(windowRect.height/16), windowRect.width/8, windowRect.height/8), "OK"))
+				Application.Quit();
         
     }
 }
