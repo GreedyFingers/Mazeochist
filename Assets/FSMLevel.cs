@@ -48,6 +48,9 @@ public class FSMLevel : MonoBehaviour {
 	private GameObject _player;
 	private GameObject _enemy;	
 	
+	private int _enemyStartTime;
+	private int _enemySpeed;
+	
 #endregion
 	
 #region Public Properties	
@@ -56,6 +59,18 @@ public class FSMLevel : MonoBehaviour {
 	{
 		get {return _player;}
 	}
+	
+	public int EnemyStartTime
+	{
+		get {return _enemyStartTime;}
+		set {_enemyStartTime = value;}
+	}
+	
+	public int EnemySpeed
+	{
+		get {return _enemySpeed;}
+		set {_enemySpeed = value;}
+	}	
 	
 #endregion
 	
@@ -101,7 +116,7 @@ public class FSMLevel : MonoBehaviour {
 			}
 			case(STATE.SETUP_ENEMY):
 			{
-				if(Time.timeSinceLevelLoad < 5)
+				if(Time.timeSinceLevelLoad < _enemyStartTime)
 					break;
 				else
 				{
@@ -112,6 +127,7 @@ public class FSMLevel : MonoBehaviour {
 					Quaternion.identity);				
 					_enemy.GetComponent<FSMEnemy>().Rooms = objaRooms;
 					_enemy.GetComponent<FSMEnemy>().EndRoom = _endingRoom;
+					_enemy.GetComponent<FSMEnemy>().Speed = _enemySpeed;
 					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom -= emptyEventMethod;					
 					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += playerEnteredNewRoom;				
 					currentState = STATE.PLAYING;	
@@ -412,7 +428,6 @@ public class FSMLevel : MonoBehaviour {
 	/// </Event handler>
 	private void player_gameWon(GameObject sender)
 	{
-		currentState = STATE.GAME_WON;
 		gameWon(this.gameObject);	
 	}
 	
@@ -425,7 +440,6 @@ public class FSMLevel : MonoBehaviour {
 	
 	private void player_gameLost(GameObject sender)
 	{
-		currentState = STATE.GAME_LOST;	
 		gameLost(this.gameObject);				
 	}	
 #endregion

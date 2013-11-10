@@ -6,16 +6,22 @@ public class levelFactory : MonoBehaviour {
 	public GameObject levelObect;
 	private int _intGridSize;
 	private float _timeElapsed;
+	private int _enemyStartTime;	
+	private int _enemySpeed;
 	
 	private GameObject currentLevel;
 	// Use this for initialization
 	void Start () 
 	{
-		_intGridSize = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize;		
+		_intGridSize = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize;
+		_enemyStartTime = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime;
+		_enemySpeed = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._enemySpeed;
 		currentLevel = (GameObject)Instantiate(levelObect,new Vector3(0,0,0),Quaternion.identity);
 		currentLevel.GetComponent<FSMLevel>().intGridSize = _intGridSize;
+		currentLevel.GetComponent<FSMLevel>().EnemyStartTime = _enemyStartTime;
+		currentLevel.GetComponent<FSMLevel>().EnemySpeed = _enemySpeed;		
 		currentLevel.GetComponent<FSMLevel>().gameWon += level_gameWon;	
-		currentLevel.GetComponent<FSMLevel>().gameLost += level_gameWon;
+		currentLevel.GetComponent<FSMLevel>().gameLost += level_gameLost;
 	}
 	
 	// Update is called once per frame
@@ -31,14 +37,18 @@ public class levelFactory : MonoBehaviour {
           		// Create a file to write to. 
           		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
           		{
-          		    sw.WriteLine(_intGridSize);
+          		    sw.WriteLine("Won" + "," + _enemyStartTime + "," + _enemySpeed + "," + _intGridSize);
           		}					
         }				
-		print (_timeElapsed);
+		if((_enemyStartTime/_timeElapsed)>.25)
+			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed--;
+		else
+			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed++;			
+		GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime--;	
 		if(_timeElapsed<50)
 			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize++;
 		else
-			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;
+			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;			
 		Application.LoadLevel(Application.loadedLevel);
 	}
 	
@@ -50,10 +60,14 @@ public class levelFactory : MonoBehaviour {
           		// Create a file to write to. 
           		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
           		{
-          		    sw.WriteLine("Lost" + "," + _intGridSize);
+          		    sw.WriteLine("Won" + "," + _enemyStartTime + "," + _enemySpeed + "," + _intGridSize);
           		}					
-        }				
-		print (_timeElapsed);		
+        }		
+		if((_enemyStartTime/_timeElapsed)>.25)
+			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed--;
+		else
+			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed++;			
+		GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime++;		
 		Application.LoadLevel(Application.loadedLevel);
 	}	
 	

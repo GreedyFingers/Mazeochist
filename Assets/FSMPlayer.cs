@@ -28,7 +28,7 @@ public class FSMPlayer : MonoBehaviour {
 	private GameObject _nextRoom;
 	
 	Vector3 direction;	
-	private int speed = 10;
+	private int speed = 60;
     float rotationSpeed = 5;	
 	float accuracy = 3;		
 	Stack lastStack = new Stack();
@@ -70,7 +70,6 @@ public class FSMPlayer : MonoBehaviour {
 	{	
 		currentState = STATE.PLAYING;
 		floatBeginningTime = Time.timeSinceLevelLoad;
-		//playerAI = new playerAIScript(objaRooms);					
 	}
 	
 	///Input: (none)
@@ -88,15 +87,11 @@ public class FSMPlayer : MonoBehaviour {
 				{
 					GetNextRoom();			
 				}
-				//movePlayer();							
+				movePlayer();							
 				break;			
 			case(STATE.PAUSED):	
 				if(Input.GetKeyDown("escape"))
 					paused_ExitState(this.gameObject);
-				break;
-			case(STATE.WON):		
-				floatEndingTime = Time.timeSinceLevelLoad;	
-				gameLost(this.gameObject);
 				break;
 		}
 	}
@@ -120,6 +115,7 @@ public class FSMPlayer : MonoBehaviour {
 	
 	void lost_EnterState(GameObject sender)
 	{
+		floatEndingTime = Time.timeSinceLevelLoad;		
 		this.currentState = STATE.LOST;		
 		this.GetComponent<InGameMenu>().enabled = true;
 		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_LOST;
@@ -132,6 +128,7 @@ public class FSMPlayer : MonoBehaviour {
 	
 	void won_EnterState(GameObject sender)
 	{
+		floatEndingTime = Time.timeSinceLevelLoad;
 		this.currentState = STATE.WON;		
 		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_WON;		
 		this.GetComponent<InGameMenu>().enabled = true;
@@ -202,8 +199,7 @@ public class FSMPlayer : MonoBehaviour {
 			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction),
 										rotationSpeed * Time.deltaTime);	
             transform.position += speed*direction.normalized*Time.deltaTime;
-            //transform.position.x += speed*direction.normalized.x*Time.deltaTime;		
-            //transform.position.z += speed*direction.normalized.z*Time.deltaTime;		
+	
 	}	
 
 #endregion

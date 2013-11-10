@@ -23,7 +23,7 @@ public class AI{
 	GameObject objCurrentRoom;
 	
 	private Transform target;
-	private int speed = 8;	
+	public int speed;	
 		
 	private GameObject[] waypoints;
 	private GameObject objLevel;
@@ -44,7 +44,7 @@ public class AI{
 	// Use this for initialization
 	public AI(ArrayList objaRooms)
 	{
-		_objaRooms = objaRooms;
+		_objaRooms = objaRooms;		
 		waypoints = new GameObject[_objaRooms.Count];
 		int intGridSize = (int)Mathf.Sqrt(_objaRooms.Count);
 		for(int index = 0; index < objaRooms.Count; index++)
@@ -102,7 +102,7 @@ public class AI{
         {
 
             direction = graph.getPathPoint(currentWP).transform.position - AIobject.transform.position;
-            AIobject.rigidbody.AddForce(direction.x*12,0,direction.z*12);
+            AIobject.rigidbody.AddForce(direction.x*speed,0,direction.z*speed);
 			if (AIobject.rigidbody.velocity.magnitude > speed)
     			AIobject.rigidbody.velocity = AIobject.rigidbody.velocity.normalized * speed;
         }

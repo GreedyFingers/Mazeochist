@@ -18,6 +18,8 @@ public class FSMEnemy : MonoBehaviour {
 	private Vector3 direction;
 	private RaycastHit hit;
 	
+	private int _speed;
+	
 	public ArrayList Rooms
 	{
 		get{return objaRooms;}
@@ -28,6 +30,11 @@ public class FSMEnemy : MonoBehaviour {
 		get{return _endRoom;}
 		set{_endRoom = value;}		
 	}	
+	public int Speed
+	{
+		get{return _speed;}
+		set{_speed = value;}
+	}
 	// Use this for initialization
 	void Start () 
 	{
@@ -43,7 +50,8 @@ public class FSMEnemy : MonoBehaviour {
 			case(STATE.CREATE_AI):
 				if(objaRooms.Count!=0)
 				{
-					enemyAI = new AI(objaRooms);			
+					enemyAI = new AI(objaRooms);	
+					enemyAI.speed = _speed;
 					currentState = STATE.PURSUING;
 				}
 				break;

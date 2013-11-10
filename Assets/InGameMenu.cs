@@ -47,6 +47,7 @@ public class InGameMenu : MonoBehaviour {
 	//Calls:
 	void OnGUI()
 	{
+		Screen.showCursor = true;		
 		switch(_currentWindow)
 		{
 			case(WINDOW_TYPE.GAME_WON):
@@ -64,7 +65,6 @@ public class InGameMenu : MonoBehaviour {
 				windowRect = GUI.Window(0,windowRect,DoMyWindow,"Game paused");
 				break;
 			}
-		Screen.showCursor = true;
 		}
 	}
 	
