@@ -2,7 +2,13 @@ fileFormatVersion: 2
 guid: f5e3647858460dd4599a43e514f97624
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - columnObject: {fileID: 100000, guid: fdf5d317ea65a1e4baaa89b255f1bdd3, type: 3}
+  - roomObject: {fileID: 100016, guid: 5bdc078e747eb674e9fe8c9e2141b413, type: 2}
+  - wallObject: {fileID: 100000, guid: ade60fc988bd6e04bbe1fce8b28672e5, type: 3}
+  - playerObject: {fileID: 100002, guid: 9d4133d5d30b644bd87802a347eaccbe, type: 2}
+  - torchObject: {fileID: 100010, guid: e32aa3dc6cfda724fafb5d16f198eff8, type: 2}
+  - enemyObject: {fileID: 100000, guid: 81bdec958639e8a4fa17cfdfd392031b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
