@@ -32,6 +32,8 @@ public class FSMLevel : MonoBehaviour {
 	public GameObject playerObject;	
 	public GameObject torchObject;
 	public GameObject enemyObject;
+	public GameObject doorWallObject;
+	public GameObject endCorridorObject;
 
 	private ArrayList objaRooms = new ArrayList();
 	private ArrayList objaWalls = new ArrayList();
@@ -39,7 +41,7 @@ public class FSMLevel : MonoBehaviour {
 	private float fltRoomSize = 12f;
 	public int intGridSize;
 	
-	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
+	private enum DIRECTION {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};
 	private enum STATE {SETUP_LEVEL, SETUP_PLAYER,SETUP_ENEMY, PLAYING, PAUSED, GAME_WON, GAME_LOST};	
 	private STATE currentState;
 	
@@ -157,16 +159,71 @@ public class FSMLevel : MonoBehaviour {
 	///then calls recursive function to remove walls and carve out the actual maze
 	void CreateGrid()
 	{		
+		GameObject endWall;
+		
 		InitializeGrid();
 		GetAllNeighboringRooms();
         //choose starting room
 		_startingRoom = ChooseEdgeRoom();
 		_startingRoom.GetComponent<roomScript>().visited = true;
+		ReplaceWallWithDoorWall(_startingRoom);
 		_endingRoom = ChooseEdgeRoom();
 		_endingRoom.GetComponent<roomScript>().endRoom = true;
+		endWall = ReplaceWallWithDoorWall(_endingRoom);		
+		PlaceEndHallway(endWall);
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
         VisitNeighbors(_startingRoom);	
 		return;
+	}
+
+	GameObject ReplaceWallWithDoorWall(GameObject objCurrentRoom)
+	{
+		Vector3 wallLocation = new Vector3(0,0,0);		
+		DIRECTION wallToReplace = ChooseWallToReplace(objCurrentRoom);
+		GameObject wallWithDoor;
+		wallWithDoor = (GameObject)Instantiate(doorWallObject,new Vector3(0,0,0),Quaternion.identity);		
+		switch(wallToReplace)
+		{
+			case(DIRECTION.LEFT):
+				wallLocation = objCurrentRoom.transform.FindChild("leftWall").transform.position;
+				wallWithDoor.transform.Rotate(new Vector3(0,180,0));
+				break;
+			case(DIRECTION.RIGHT):
+				wallLocation = objCurrentRoom.transform.FindChild("rightWall").transform.position;
+				wallWithDoor.transform.Rotate(new Vector3(0,0,0));			
+				break;
+			case(DIRECTION.ABOVE):
+				wallLocation = objCurrentRoom.transform.FindChild("topWall").transform.position;	
+				wallWithDoor.transform.Rotate(new Vector3(0,270,0));			
+				break;
+			case(DIRECTION.BELOW):
+				wallLocation = objCurrentRoom.transform.FindChild("bottomWall").transform.position;	
+				wallWithDoor.transform.Rotate(new Vector3(0,90,0));			
+				break;		
+		}
+		removeWall(objCurrentRoom,wallToReplace);
+		wallWithDoor.transform.position = wallLocation;
+		return wallWithDoor;
+	}
+	
+	void PlaceEndHallway(GameObject wallWithDoor)
+	{
+		GameObject endHallway = (GameObject)Instantiate(endCorridorObject,wallWithDoor.transform.position,Quaternion.identity);	
+		endHallway.transform.rotation = wallWithDoor.transform.rotation;
+	}
+	
+	DIRECTION ChooseWallToReplace(GameObject objCurrentRoom)
+	{
+		DIRECTION wallToBeReplaced = DIRECTION.UNASSIGED;
+		if(objCurrentRoom.GetComponent<roomScript>().leftRoom == true)
+			wallToBeReplaced = DIRECTION.LEFT;
+		else if(objCurrentRoom.GetComponent<roomScript>().topRoom == true)
+			wallToBeReplaced = DIRECTION.ABOVE;
+		else if(objCurrentRoom.GetComponent<roomScript>().bottomRoom == true)
+			wallToBeReplaced = DIRECTION.BELOW;			
+		else if(objCurrentRoom.GetComponent<roomScript>().rightRoom == true)
+			wallToBeReplaced = DIRECTION.RIGHT;	
+		return wallToBeReplaced;
 	}
 	
 	///Input: (none)
@@ -277,6 +334,7 @@ public class FSMLevel : MonoBehaviour {
 		int intUnvisitedCount = intNeighborCount;
         int intRandom;	
         GameObject objNeighbor;
+		DIRECTION neighborPosition;
 		
 		//are all neighbors visited yet?
 		intUnvisitedCount = CheckIfNeighborsAreVisited(objCurrentRoom,intNeighborCount);
@@ -288,7 +346,8 @@ public class FSMLevel : MonoBehaviour {
                 continue;
             else
             {
-                removeWall(objCurrentRoom, objNeighbor);
+				neighborPosition = GetNeighborRelativePosition(objCurrentRoom,objNeighbor);					
+                removeWall(objCurrentRoom, neighborPosition,objNeighbor);
 				objNeighbor.GetComponent<roomScript>().visited = true;	
 				//recurse
 				VisitNeighbors(objNeighbor);
@@ -303,67 +362,91 @@ public class FSMLevel : MonoBehaviour {
 	///Called From: VisitNeighbors()
 	///Calls: (none)
 	///remove a wall between two rooms	
-    private void removeWall(GameObject objCurrentRoom, GameObject objNeighbor)
+    private void removeWall(GameObject objCurrentRoom, DIRECTION wallLocation, GameObject objNeighbor = null )
     {
 		GameObject objCurrentWall;
+		bool deleteNeighborWall = true;
+			
+		if(objNeighbor == null)
+			deleteNeighborWall = false;
 		
-		NEIGHBOR_RELATIVE_POSITIONS neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.UNASSIGED;
-        if(objCurrentRoom.transform.position.x < objNeighbor.transform.position.x)
-			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.RIGHT;
-		else if(objCurrentRoom.transform.position.x > objNeighbor.transform.position.x)
-			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.LEFT;	
-		else if(objCurrentRoom.transform.position.z < objNeighbor.transform.position.z)
-			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.ABOVE;		
-		else if(objCurrentRoom.transform.position.z > objNeighbor.transform.position.z)
-			neighborPosition = NEIGHBOR_RELATIVE_POSITIONS.BELOW;		
 		
-		switch(neighborPosition)
+		switch(wallLocation)
 		{
-			case(NEIGHBOR_RELATIVE_POSITIONS.LEFT):
+			case(DIRECTION.LEFT):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("leftWall").gameObject;
 				objaWalls.Remove (objCurrentWall);
 				Destroy(objCurrentWall);
-				objCurrentWall = objNeighbor.transform.FindChild("rightWall").gameObject;
-				Destroy(objCurrentWall);
-				objaWalls.Remove (objCurrentWall);	
+				if(deleteNeighborWall)
+				{
+					objCurrentWall = objNeighbor.transform.FindChild("rightWall").gameObject;
+					Destroy(objCurrentWall);
+					objaWalls.Remove (objCurrentWall);	
+				}
 				break;
 			}
-			case(NEIGHBOR_RELATIVE_POSITIONS.RIGHT):
+			case(DIRECTION.RIGHT):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("rightWall").gameObject;
 				objaWalls.Remove (objCurrentWall);			
 				Destroy(objCurrentWall);
-				objCurrentWall = objNeighbor.transform.FindChild("leftWall").gameObject;
-				objaWalls.Remove (objCurrentWall);			
-				Destroy(objCurrentWall);
+				if(deleteNeighborWall)
+				{
+					objCurrentWall = objNeighbor.transform.FindChild("leftWall").gameObject;
+					Destroy(objCurrentWall);
+					objaWalls.Remove (objCurrentWall);	
+				}
 				break;
 			}
-			case(NEIGHBOR_RELATIVE_POSITIONS.BELOW):
+			case(DIRECTION.BELOW):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("bottomWall").gameObject;
 				objaWalls.Remove (objCurrentWall);			
 				Destroy(objCurrentWall);
-				objCurrentWall = objNeighbor.transform.FindChild("topWall").gameObject;
-				objaWalls.Remove (objCurrentWall);			
-				Destroy(objCurrentWall);
+				if(deleteNeighborWall)
+				{
+					objCurrentWall = objNeighbor.transform.FindChild("topWall").gameObject;
+					Destroy(objCurrentWall);
+					objaWalls.Remove (objCurrentWall);	
+				};
 				break;
 			}
-			case(NEIGHBOR_RELATIVE_POSITIONS.ABOVE):
+			case(DIRECTION.ABOVE):
 			{
 				objCurrentWall = objCurrentRoom.transform.FindChild("topWall").gameObject;
 				objaWalls.Remove (objCurrentWall);			
 				Destroy(objCurrentWall);
-				objCurrentWall = objNeighbor.transform.FindChild("bottomWall").gameObject;
-				objaWalls.Remove (objCurrentWall);			
-				Destroy(objCurrentWall);
+				if(deleteNeighborWall)
+				{
+					objCurrentWall = objNeighbor.transform.FindChild("bottomWall").gameObject;
+					Destroy(objCurrentWall);
+					objaWalls.Remove (objCurrentWall);	
+				}
 				break;
 			}
 			default:
 				break;			
 		}//switch
-		objCurrentRoom.GetComponent<roomScript>().objaAccessibleNeighbors.Add(objNeighbor);		
+		if(deleteNeighborWall)
+			objCurrentRoom.GetComponent<roomScript>().objaAccessibleNeighbors.Add(objNeighbor);		
 		return;
+	}
+		
+	DIRECTION GetNeighborRelativePosition(GameObject objCurrentRoom, GameObject objCurrentNeighbor)
+	{
+		DIRECTION neighborPosition = DIRECTION.UNASSIGED;
+			
+        if(objCurrentRoom.transform.position.x < objCurrentNeighbor.transform.position.x)
+			neighborPosition = DIRECTION.RIGHT;
+		else if(objCurrentRoom.transform.position.x > objCurrentNeighbor.transform.position.x)
+			neighborPosition = DIRECTION.LEFT;	
+		else if(objCurrentRoom.transform.position.z < objCurrentNeighbor.transform.position.z)
+			neighborPosition = DIRECTION.ABOVE;		
+		else if(objCurrentRoom.transform.position.z > objCurrentNeighbor.transform.position.z)
+			neighborPosition = DIRECTION.BELOW;	
+			
+		return neighborPosition;
 	}
 	
 	///Input: current room, and also number of neighbors

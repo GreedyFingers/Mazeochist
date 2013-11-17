@@ -87,7 +87,7 @@ public class FSMPlayer : MonoBehaviour {
 				{
 					GetNextRoom();			
 				}
-				movePlayer();							
+				//movePlayer();						
 				break;			
 			case(STATE.PAUSED):	
 				if(Input.GetKeyDown("escape"))
@@ -167,9 +167,12 @@ public class FSMPlayer : MonoBehaviour {
 					playerEnteredNewRoom(this.gameObject);
 					break;
 				}
+				//won_EnterState(this.gameObject);
+				break;
+			case("endRoom"):
 				won_EnterState(this.gameObject);
 				break;
-		case("enemyCollider"):
+			case("enemyCollider"):
 				lost_EnterState(this.gameObject);
 				break;
 		}
