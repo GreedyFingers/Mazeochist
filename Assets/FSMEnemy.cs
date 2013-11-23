@@ -63,7 +63,18 @@ public class FSMEnemy : MonoBehaviour {
 					enemyAI.graph.AStar(_enemyLoc,_endLoc);
 					buildNextGraph = false;
 				}
-				enemyAI.moveAI(this.gameObject);				
+				direction = _player.transform.position - this.transform.position;			
+    			if (Physics.Raycast(this.transform.position, direction,out hit)) 
+				{
+        			if (hit.transform == _player.transform) 
+					{
+           				this.rigidbody.AddForce(direction.x*_speed,0,direction.z*_speed);
+						if (this.rigidbody.velocity.magnitude > _speed)
+    						this.rigidbody.velocity = this.rigidbody.velocity.normalized * _speed;
+        			}
+					else
+						enemyAI.moveAI(this.gameObject);				
+				}				
 				break;			
 			case(STATE.PAUSED):	
 				break;

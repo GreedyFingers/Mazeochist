@@ -167,7 +167,7 @@ public class FSMPlayer : MonoBehaviour {
 					playerEnteredNewRoom(this.gameObject);
 					break;
 				}
-				//won_EnterState(this.gameObject);
+				won_EnterState(this.gameObject);
 				break;
 			case("endRoom"):
 				won_EnterState(this.gameObject);

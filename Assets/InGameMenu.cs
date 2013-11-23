@@ -76,7 +76,7 @@ public class InGameMenu : MonoBehaviour {
 	{
 		if(_currentWindow != WINDOW_TYPE.GAME_PAUSED)
         	if (GUI.Button(new Rect((windowRect.width/2)-(windowRect.width/16), (windowRect.height/2)-(windowRect.height/16), windowRect.width/8, windowRect.height/8), "OK"))
-				Application.Quit();
+				Application.LoadLevel(0);
         
     }
 }

@@ -20,8 +20,8 @@ public class levelFactory : MonoBehaviour {
 		currentLevel.GetComponent<FSMLevel>().intGridSize = _intGridSize;
 		currentLevel.GetComponent<FSMLevel>().EnemyStartTime = _enemyStartTime;
 		currentLevel.GetComponent<FSMLevel>().EnemySpeed = _enemySpeed;		
-		currentLevel.GetComponent<FSMLevel>().gameWon += level_gameWon;	
-		currentLevel.GetComponent<FSMLevel>().gameLost += level_gameLost;
+		//currentLevel.GetComponent<FSMLevel>().gameWon += level_gameWon;	
+		//	currentLevel.GetComponent<FSMLevel>().gameLost += level_gameLost;
 	}
 	
 	// Update is called once per frame
@@ -45,10 +45,10 @@ public class levelFactory : MonoBehaviour {
 		else
 			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed++;			
 		GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime--;	
-		if(_timeElapsed<50)
+		if(_timeElapsed<30)
 			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize++;
 		else
-			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;			
+			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;		
 		Application.LoadLevel(Application.loadedLevel);
 	}
 	
