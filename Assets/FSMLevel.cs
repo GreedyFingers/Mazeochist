@@ -47,6 +47,7 @@ public class FSMLevel : MonoBehaviour {
 	
 	private GameObject _startingRoom;
 	private GameObject _endingRoom;
+	private GameObject endWall;	
 	private GameObject _player;
 	private GameObject _enemy;	
 	
@@ -111,7 +112,8 @@ public class FSMLevel : MonoBehaviour {
 				_player.GetComponent<FSMPlayer>().CurrentRoom = _startingRoom;		
 				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;
 				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
-				_player.GetComponent<FSMPlayer>().gameLost += player_gameLost;			
+				_player.GetComponent<FSMPlayer>().gameLost += player_gameLost;	
+				_player.GetComponent<FSMPlayer>()._endGate = endWall;
 				InsertTorches();						
 				currentState = STATE.SETUP_ENEMY;				
 				break;
@@ -159,7 +161,6 @@ public class FSMLevel : MonoBehaviour {
 	///then calls recursive function to remove walls and carve out the actual maze
 	void CreateGrid()
 	{		
-		GameObject endWall;
 		
 		InitializeGrid();
 		GetAllNeighboringRooms();

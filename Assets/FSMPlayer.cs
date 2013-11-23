@@ -37,6 +37,8 @@ public class FSMPlayer : MonoBehaviour {
 	private float floatEndingTime;	
 	private float pauseDelay = 1;
 	private float pauseTime;
+	
+	public GameObject _endGate;
 #endregion
 	
 #region Public Properties
@@ -165,9 +167,15 @@ public class FSMPlayer : MonoBehaviour {
 				if(other.GetComponent<roomScript>().endRoom == false)
 				{
 					playerEnteredNewRoom(this.gameObject);
-					break;
 				}
-				won_EnterState(this.gameObject);
+				else
+				{
+					_endGate.transform.FindChild("Door1").animation.Play();
+					//animation.Play("Door1Open");
+					_endGate.transform.FindChild("Door2").animation.Play();
+					//.animation.Play("Door2Open");				
+				}
+				
 				break;
 			case("endRoom"):
 				won_EnterState(this.gameObject);
