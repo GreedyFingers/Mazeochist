@@ -529,7 +529,8 @@ public class FSMLevel : MonoBehaviour {
 	/// </Event handler>
 	private void player_gameWon(GameObject sender)
 	{
-		gameWon(this.gameObject);	
+		if(gameWon!= null)
+			gameWon(this.gameObject);	
 	}
 	
 	private void emptyEventMethod(GameObject sender){}
@@ -541,7 +542,8 @@ public class FSMLevel : MonoBehaviour {
 	
 	private void player_gameLost(GameObject sender)
 	{
-		gameLost(this.gameObject);				
+		if(gameWon!= null)		
+			gameLost(this.gameObject);				
 	}	
 #endregion
 

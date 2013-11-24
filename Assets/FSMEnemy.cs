@@ -54,6 +54,9 @@ public class FSMEnemy : MonoBehaviour {
 				{
 					enemyAI = new AI(objaRooms);	
 					enemyAI.speed = _speed;
+					_enemyLoc = enemyAI.getClosestWP(this.gameObject);			
+					_playerLoc = enemyAI.getClosestWP(_player);					
+					enemyAI.graph.AStar(_enemyLoc,_playerLoc);				
 					currentState = STATE.FALLING;
 					timeSpawned = Time.timeSinceLevelLoad;
 				}
@@ -63,13 +66,6 @@ public class FSMEnemy : MonoBehaviour {
 					currentState = STATE.PURSUING;
 				 break;
 			case(STATE.PURSUING):
-				if(buildNextGraph == true)
-				{
-					_enemyLoc = enemyAI.getClosestWP(this.gameObject);			
-					_endLoc = enemyAI.getClosestWP(_player);					
-					enemyAI.graph.AStar(_enemyLoc,_endLoc);
-					buildNextGraph = false;
-				}
 				direction = _player.transform.position - this.transform.position;			
     			if (Physics.Raycast(this.transform.position, direction,out hit)) 
 				{

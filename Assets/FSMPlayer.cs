@@ -35,10 +35,9 @@ public class FSMPlayer : MonoBehaviour {
 	
 	private float floatBeginningTime;
 	private float floatEndingTime;	
-	private float pauseDelay = 1;
-	private float pauseTime;
 	
 	public GameObject _endGate;
+	private bool gateIsOpen;
 #endregion
 	
 #region Public Properties
@@ -72,6 +71,7 @@ public class FSMPlayer : MonoBehaviour {
 	{	
 		currentState = STATE.PLAYING;
 		floatBeginningTime = Time.timeSinceLevelLoad;
+		gateIsOpen = false;
 	}
 	
 	///Input: (none)
@@ -104,7 +104,6 @@ public class FSMPlayer : MonoBehaviour {
 	/// </Event handler>	
 	void paused_EnterState(GameObject sender)
 	{	
-		pauseTime = Time.timeSinceLevelLoad;
 		this.currentState = STATE.PAUSED;	
 		this.GetComponent<InGameMenu>().CurrentWindow = InGameMenu.WINDOW_TYPE.GAME_PAUSED;		
 		this.GetComponent<InGameMenu>().enabled = true;		
@@ -170,10 +169,12 @@ public class FSMPlayer : MonoBehaviour {
 				}
 				else
 				{
-					_endGate.transform.FindChild("Door1").animation.Play();
-					//animation.Play("Door1Open");
-					_endGate.transform.FindChild("Door2").animation.Play();
-					//.animation.Play("Door2Open");				
+					if(gateIsOpen == false)
+					{
+						_endGate.transform.FindChild("Door1").animation.Play();
+						_endGate.transform.FindChild("Door2").animation.Play();
+						gateIsOpen = true;
+					}
 				}
 				
 				break;
@@ -220,9 +221,7 @@ public class FSMPlayer : MonoBehaviour {
 	
 	public event EventHandler gameWon; 
 	public event EventHandler playerEnteredNewRoom;
-	public event EventHandler gameLost;
-	public event EventHandler pauseGame;
-	public event EventHandler unpauseGame;			
+	public event EventHandler gameLost;		
 #endregion
 }
 
