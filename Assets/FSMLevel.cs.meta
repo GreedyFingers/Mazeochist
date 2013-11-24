@@ -10,7 +10,8 @@ MonoImporter:
   - torchObject: {fileID: 100010, guid: 3c458040fc9a54d48ac8b44a51c55101, type: 2}
   - enemyObject: {fileID: 100000, guid: 81bdec958639e8a4fa17cfdfd392031b, type: 3}
   - doorWallObject: {fileID: 100006, guid: 76c90209fa9f731448033da5926de0f9, type: 2}
-  - endCorridorObject: {fileID: 100024, guid: 2dd3766d436b151439d133b190653871, type: 2}
+  - endCorridorObject: {fileID: 100062, guid: 1d3655e6c12e8ac4f93eca05699c7ba6, type: 2}
+  - enemyGateObject: {fileID: 100020, guid: 0e78222c589335946bf671eec8a80c0d, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

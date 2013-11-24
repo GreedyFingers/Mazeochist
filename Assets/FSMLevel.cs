@@ -34,6 +34,7 @@ public class FSMLevel : MonoBehaviour {
 	public GameObject enemyObject;
 	public GameObject doorWallObject;
 	public GameObject endCorridorObject;
+	public GameObject enemyGateObject;
 
 	private ArrayList objaRooms = new ArrayList();
 	private ArrayList objaWalls = new ArrayList();
@@ -47,12 +48,16 @@ public class FSMLevel : MonoBehaviour {
 	
 	private GameObject _startingRoom;
 	private GameObject _endingRoom;
-	private GameObject endWall;	
+	private GameObject _enemyGate;
+	private GameObject _endWall;	
+	private GameObject _startWall;
 	private GameObject _player;
 	private GameObject _enemy;	
 	
 	private int _enemyStartTime;
 	private int _enemySpeed;
+	
+	private int timeFallingDelay = 2;
 	
 #endregion
 	
@@ -113,32 +118,34 @@ public class FSMLevel : MonoBehaviour {
 				_player.GetComponent<FSMPlayer>().gameWon += player_gameWon;
 				_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += emptyEventMethod;
 				_player.GetComponent<FSMPlayer>().gameLost += player_gameLost;	
-				_player.GetComponent<FSMPlayer>()._endGate = endWall;
+				_player.GetComponent<FSMPlayer>()._endGate = _endWall;
 				InsertTorches();						
 				currentState = STATE.SETUP_ENEMY;				
 				break;
 			}
 			case(STATE.SETUP_ENEMY):
 			{
-				if(Time.timeSinceLevelLoad < _enemyStartTime)
+				if(Time.timeSinceLevelLoad < _enemyStartTime-timeFallingDelay)
 					break;
 				else
 				{
 					_enemy = (GameObject)Instantiate(enemyObject,
-					new Vector3(_startingRoom.transform.position.x,
-							_startingRoom.transform.position.y+3,
-							_startingRoom.transform.position.z),
-					Quaternion.identity);				
+					new Vector3(_enemyGate.transform.position.x,
+								_enemyGate.transform.position.y+enemyObject.renderer.bounds.size.y,
+								_enemyGate.transform.position.z),
+					Quaternion.identity);
+					_enemy.GetComponent<FSMEnemy>().timeFallingDelay = timeFallingDelay;				
 					_enemy.GetComponent<FSMEnemy>().Rooms = objaRooms;
 					_enemy.GetComponent<FSMEnemy>().EndRoom = _endingRoom;
 					_enemy.GetComponent<FSMEnemy>().Speed = _enemySpeed;
 					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom -= emptyEventMethod;					
-					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += playerEnteredNewRoom;				
+					_player.GetComponent<FSMPlayer>().playerEnteredNewRoom += playerEnteredNewRoom;		
+					_enemyGate.transform.FindChild("gate").animation.Play();				
 					currentState = STATE.PLAYING;	
 				}
 				break;
 			}
-			case(STATE.PLAYING):
+			case(STATE.PLAYING):			
 				break;
 			case(STATE.PAUSED):
 			{
@@ -167,11 +174,12 @@ public class FSMLevel : MonoBehaviour {
         //choose starting room
 		_startingRoom = ChooseEdgeRoom();
 		_startingRoom.GetComponent<roomScript>().visited = true;
-		ReplaceWallWithDoorWall(_startingRoom);
+		_startWall = ReplaceWallWithDoorWall(_startingRoom);
 		_endingRoom = ChooseEdgeRoom();
 		_endingRoom.GetComponent<roomScript>().endRoom = true;
-		endWall = ReplaceWallWithDoorWall(_endingRoom);		
-		PlaceEndHallway(endWall);
+		_endWall = ReplaceWallWithDoorWall(_endingRoom);		
+		PlaceEndHallway(_endWall);
+		PlaceEnemyGate();
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
         VisitNeighbors(_startingRoom);	
 		return;
@@ -194,7 +202,7 @@ public class FSMLevel : MonoBehaviour {
 				wallWithDoor.transform.Rotate(new Vector3(0,0,0));			
 				break;
 			case(DIRECTION.ABOVE):
-				wallLocation = objCurrentRoom.transform.FindChild("topWall").transform.position;	
+					wallLocation = objCurrentRoom.transform.FindChild("topWall").transform.position;	
 				wallWithDoor.transform.Rotate(new Vector3(0,270,0));			
 				break;
 			case(DIRECTION.BELOW):
@@ -225,6 +233,15 @@ public class FSMLevel : MonoBehaviour {
 		else if(objCurrentRoom.GetComponent<roomScript>().rightRoom == true)
 			wallToBeReplaced = DIRECTION.RIGHT;	
 		return wallToBeReplaced;
+	}
+	
+	void PlaceEnemyGate()
+	{
+		_enemyGate = (GameObject)Instantiate(enemyGateObject,new Vector3(_startingRoom.transform.position.x,
+												   _startingRoom.transform.position.y + 
+													_startingRoom.transform.FindChild("topWall").renderer.bounds.size.y*.99f,
+												   _startingRoom.transform.position.z),Quaternion.identity);
+		_enemyGate.transform.Rotate(new Vector3(0,_startWall.transform.rotation.y+270,0));
 	}
 	
 	///Input: (none)

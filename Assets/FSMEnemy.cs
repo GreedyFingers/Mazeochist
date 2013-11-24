@@ -4,7 +4,7 @@ using System.Collections;
 public class FSMEnemy : MonoBehaviour {
 	
 	private enum NEIGHBOR_RELATIVE_POSITIONS {UNASSIGED, LEFT, RIGHT, BELOW, ABOVE};	
-	private enum STATE {CREATE_AI, PURSUING, PAUSED, WON, LOST};
+	private enum STATE {CREATE_AI, FALLING, PURSUING, PAUSED, WON, LOST};
 	private STATE currentState;	
 	private AI enemyAI;
 	private ArrayList objaRooms = new ArrayList();
@@ -18,6 +18,8 @@ public class FSMEnemy : MonoBehaviour {
 	private Vector3 direction;
 	private RaycastHit hit;
 	
+	private float timeSpawned;
+	public float timeFallingDelay = 2;
 	private int _speed;
 	
 	public ArrayList Rooms
@@ -52,9 +54,14 @@ public class FSMEnemy : MonoBehaviour {
 				{
 					enemyAI = new AI(objaRooms);	
 					enemyAI.speed = _speed;
-					currentState = STATE.PURSUING;
+					currentState = STATE.FALLING;
+					timeSpawned = Time.timeSinceLevelLoad;
 				}
 				break;
+			case(STATE.FALLING):
+				if(Time.timeSinceLevelLoad>(timeSpawned+timeFallingDelay))
+					currentState = STATE.PURSUING;
+				 break;
 			case(STATE.PURSUING):
 				if(buildNextGraph == true)
 				{
