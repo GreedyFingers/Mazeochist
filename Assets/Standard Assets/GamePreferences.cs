@@ -6,7 +6,7 @@ using System.Collections;
 public class GamePreferences : MonoBehaviour 
 {
     
-	public static float Volume = 1; // starting music volume
+	public static float Volume = .2f; // starting music volume
 
     public static float Sound = 1; // starting non music sound volume
     public static int Difficulty = 1;  // starting difficulty

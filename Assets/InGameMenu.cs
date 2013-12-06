@@ -14,7 +14,7 @@ using System.Collections;
 /// (none yet)
 /// </FSM Dependencies>
 public class InGameMenu : MonoBehaviour {
-	
+	public   AudioClip AudioFile2 ;
 	public enum WINDOW_TYPE {GAME_WON, GAME_LOST, GAME_PAUSED};	
 	private Rect windowRect = new Rect(Screen.width/4, Screen.height/4,Screen.width/2, Screen.height/2);	
 	private WINDOW_TYPE _currentWindow; 
@@ -74,9 +74,13 @@ public class InGameMenu : MonoBehaviour {
 	//Calls: (none)
     void DoMyWindow(int windowID) 
 	{
-		if(_currentWindow != WINDOW_TYPE.GAME_PAUSED)
+		if(_currentWindow != WINDOW_TYPE.GAME_PAUSED){
         	if (GUI.Button(new Rect((windowRect.width/2)-(windowRect.width/16), (windowRect.height/2)-(windowRect.height/16), windowRect.width/8, windowRect.height/8), "OK"))
-				Application.LoadLevel(0);
+		{
+			  audio.clip = AudioFile2;
+			audio.Play();
+		
+				Application.LoadLevel(0);}}
         
     }
 }

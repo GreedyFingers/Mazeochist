@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class playerPrefs : MonoBehaviour {
 	
-	public int _intGridSize;
+	public static int _intGridSize =3;
 	public int _enemyStartTime;
 	public int _enemySpeed;
+	
 	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad(this.gameObject);

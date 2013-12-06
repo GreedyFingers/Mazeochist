@@ -35,7 +35,7 @@ public class FSMPlayer : MonoBehaviour {
 	
 	private float floatBeginningTime;
 	private float floatEndingTime;	
-	
+		public AudioClip Splat1;
 	public GameObject _endGate;
 	private bool gateIsOpen;
 #endregion
@@ -182,7 +182,12 @@ public class FSMPlayer : MonoBehaviour {
 				won_EnterState(this.gameObject);
 				break;
 			case("enemyCollider"):
-				lost_EnterState(this.gameObject);
+				
+			  audio.clip = Splat1;
+			audio.Play();
+
+			
+			lost_EnterState(this.gameObject);
 				break;
 		}
 		

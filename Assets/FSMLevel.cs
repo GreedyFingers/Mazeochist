@@ -129,6 +129,9 @@ public class FSMLevel : MonoBehaviour {
 					break;
 				else
 				{
+				audio.Play ();
+
+				
 					_enemy = (GameObject)Instantiate(enemyObject,
 					new Vector3(_enemyGate.transform.position.x,
 								_enemyGate.transform.position.y+enemyObject.renderer.bounds.size.y,

@@ -49,7 +49,7 @@ public class MenuControl : MonoBehaviour
             case "PlayButton": // if clicks on play then playsclick sound and loads main game
           	audio.Play();
 			
-			light.intensity =4; // creates a bright flash as game starts
+	
 			Application.LoadLevel(2);
                 break;
            

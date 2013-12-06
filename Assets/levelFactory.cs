@@ -13,7 +13,8 @@ public class levelFactory : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		_intGridSize = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize;
+	_intGridSize = 	playerPrefs._intGridSize;
+
 		_enemyStartTime = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime;
 		_enemySpeed = GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._enemySpeed;
 		currentLevel = (GameObject)Instantiate(levelObect,new Vector3(0,0,0),Quaternion.identity);
@@ -46,10 +47,16 @@ public class levelFactory : MonoBehaviour {
 			GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed++;			
 		GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemyStartTime--;	
 		if(_timeElapsed<30)
-			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize++;
-		else
-			GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;		
-		Application.LoadLevel(Application.loadedLevel);
+			//GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize++;
+		
+				playerPrefs._intGridSize++;
+
+			else
+		//	GameObject.Find ("playerPrefs").GetComponent<playerPrefs>()._intGridSize--;		
+		
+				playerPrefs._intGridSize--;
+
+			Application.LoadLevel(Application.loadedLevel);
 	}
 	
 	private void level_gameLost(GameObject sender)

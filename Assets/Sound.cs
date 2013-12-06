@@ -6,16 +6,18 @@ using System.Collections;
 // controls slider used to adjust volume of all non music sounds
 
 public class Sound : MonoBehaviour {
-	public static float hSliderValue2   = 1.0f;
+	public static float hSliderValue2;
 	 public string MenuButtonIdentity;
 	// Use this for initialization
 	void Start () {
 	 	
 		
 		// sets the game preference variable sound equal to the sliders value
+		hSliderValue2 = GamePreferences.Sound;
+		
 		GamePreferences.Sound= hSliderValue2;   
 
-	 GetComponent<TextMesh>().text = ""+GamePreferences.Sound; // displays the volume level
+	 GetComponent<TextMesh>().text = ""+(Mathf.Round(GamePreferences.Sound*100f))/100f ; // displays the volume level
 	
 	}
 	
@@ -31,8 +33,9 @@ public class Sound : MonoBehaviour {
 		GamePreferences.Sound= hSliderValue2;
 		
 	
-	
-				 GetComponent<TextMesh>().text = ""+GamePreferences.Sound;
+		 GetComponent<TextMesh>().text = ""+(Mathf.Round(GamePreferences.Sound*100f))/100f ;
+		
+		//GetComponent<TextMesh>().text = ""+GamePreferences.Sound;
 		
 	}
 
@@ -41,7 +44,7 @@ public class Sound : MonoBehaviour {
 
 	
 		// creates the slider
-hSliderValue2 = GUI.HorizontalSlider(new Rect(100, 50, 100, 30), hSliderValue2, 0.0F, 1.0F);
+hSliderValue2 = GUI.HorizontalSlider(new Rect(520, 320, 400, 35), hSliderValue2, 0.0F, 1.0F);
 		GetComponent<TextMesh>().text = ""+GamePreferences.Sound; // displays the value of the slider
 		
 

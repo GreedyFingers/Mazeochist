@@ -4,7 +4,7 @@
 
 // Does this script currently respond to input?
 var canControl : boolean = true;
-
+ public var AudioFile : AudioClip;
 var useFixedUpdate : boolean = true;
 
 // For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.
@@ -13,7 +13,10 @@ var useFixedUpdate : boolean = true;
 // The current global direction we want the character to move in.
 @System.NonSerialized
 var inputMoveDirection : Vector3 = Vector3.zero;
+var T1 : Vector3 = Vector3.zero;
+var TVelocity : Vector3 = Vector3.zero;
 
+var P1 : int = 0;
 // Is the jump button held down? We use this interface instead of checking
 // for the jump button directly so this script can also be used by AIs.
 @System.NonSerialized
@@ -382,6 +385,40 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 		// When going downhill, DO move down manually, as gravity is not enough on steep hills.
 		velocity.y = Mathf.Min(velocity.y, 0);
 	}
+	
+	
+	
+ 
+
+	
+	
+	 if ( inputMoveDirection != T1)
+   {
+   
+    
+    audio.clip = AudioFile;
+   audio.loop = true;
+    if(P1 ==0){
+    P1 =1;
+    audio.Play();}
+    
+ }
+    
+    
+	 if (  inputMoveDirection == T1)
+    {
+   if (TVelocity == velocity){
+    
+   audio.clip = AudioFile;
+    audio.loop = false;
+   audio.Stop();
+  P1 = 0;  
+ }}
+    
+		
+	
+	
+	
 	
 	return velocity;
 }
