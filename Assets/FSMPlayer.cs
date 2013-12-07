@@ -193,7 +193,8 @@ public class FSMPlayer : MonoBehaviour {
 			{
 			  	audio.clip = Splat1;
 				audio.Play();
-				hit = true;			
+				hit = true;
+				GameObject.Find ("sphere_enemy(Clone)").audio.Stop ();
 			}
 
 			

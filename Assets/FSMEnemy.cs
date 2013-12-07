@@ -63,7 +63,10 @@ public class FSMEnemy : MonoBehaviour {
 				break;
 			case(STATE.FALLING):
 				if(Time.timeSinceLevelLoad>(timeSpawned+timeFallingDelay))
+				{	
 					currentState = STATE.PURSUING;
+					audio.Play();			
+				}
 				 break;
 			case(STATE.PURSUING):
 				direction = _player.transform.position - this.transform.position;			
