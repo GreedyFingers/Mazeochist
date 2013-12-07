@@ -38,6 +38,7 @@ public class FSMPlayer : MonoBehaviour {
 		public AudioClip Splat1;
 	public GameObject _endGate;
 	private bool gateIsOpen;
+	private bool hit;
 #endregion
 	
 #region Public Properties
@@ -72,6 +73,7 @@ public class FSMPlayer : MonoBehaviour {
 		currentState = STATE.PLAYING;
 		floatBeginningTime = Time.timeSinceLevelLoad;
 		gateIsOpen = false;
+		hit = false;
 	}
 	
 	///Input: (none)
@@ -110,7 +112,8 @@ public class FSMPlayer : MonoBehaviour {
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
 		this.gameObject.GetComponent<FPSInputController>().enabled = false;
-		Camera.main.GetComponent<MouseLook>().enabled = false;	
+		this.GetComponent<MouseLook>().enabled = false;	
+		this.transform.FindChild("Main Camera").GetComponent<MouseLook>().enabled = false;		
 		Time.timeScale = 0;		
 	}
 	
@@ -123,7 +126,8 @@ public class FSMPlayer : MonoBehaviour {
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
 		this.gameObject.GetComponent<FPSInputController>().enabled = false;
-		Camera.main.GetComponent<MouseLook>().enabled = false;	
+		this.GetComponent<MouseLook>().enabled = false;	
+		this.transform.FindChild("Main Camera").GetComponent<MouseLook>().enabled = false;			
 		gameLost(this.gameObject);			
 	}
 	
@@ -136,7 +140,8 @@ public class FSMPlayer : MonoBehaviour {
 		this.gameObject.GetComponent<MouseLook>().enabled = false;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = false;
 		this.gameObject.GetComponent<FPSInputController>().enabled = false;
-		Camera.main.GetComponent<MouseLook>().enabled = false;
+		this.GetComponent<MouseLook>().enabled = false;
+		this.transform.FindChild("Main Camera").GetComponent<MouseLook>().enabled = false;			
 		gameWon(this.gameObject);
 	}	
 
@@ -147,7 +152,8 @@ public class FSMPlayer : MonoBehaviour {
 		this.gameObject.GetComponent<MouseLook>().enabled = true;
 		this.gameObject.GetComponent<CharacterMotor>().enabled = true;
 		this.gameObject.GetComponent<FPSInputController>().enabled = true;
-		Camera.main.GetComponent<MouseLook>().enabled = true;
+		this.GetComponent<MouseLook>().enabled = true;
+		this.transform.FindChild("Main Camera").GetComponent<MouseLook>().enabled = true;	
 		Time.timeScale = 1;		
 	}	
 	
@@ -182,9 +188,13 @@ public class FSMPlayer : MonoBehaviour {
 				won_EnterState(this.gameObject);
 				break;
 			case("enemyCollider"):
-				
-			  audio.clip = Splat1;
-			audio.Play();
+			
+			if(hit == false)
+			{
+			  	audio.clip = Splat1;
+				audio.Play();
+				hit = true;			
+			}
 
 			
 			lost_EnterState(this.gameObject);

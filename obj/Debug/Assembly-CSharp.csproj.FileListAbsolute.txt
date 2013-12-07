@@ -1,0 +1,6 @@
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\Assembly-CSharp.dll
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\Assembly-CSharp.pdb
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\ResGen.read.1.tlog
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\ResGen.write.1.tlog
+C:\Users\Squee\Documents\Temp lab\Labyrinth%20Game\obj\Debug\Properties.Resources.resources
