@@ -11,12 +11,11 @@ using System.Collections;
 public class MenuControl : MonoBehaviour 
 {
 	
-	
+	int CtoI =0;
 	
 	void Start () {
 	
 	
-		
 	     
 			
 	
@@ -69,8 +68,65 @@ public class MenuControl : MonoBehaviour
            
 		
 		
+			case "GRID":
+                
+			/*    if( GetComponent<TextMesh>().text == "LARGE"){
+			
+				 GetComponent<TextMesh>().text = "S"; 
+			
+			
+				
+					playerPrefs._intGridSize = 17;
+				   playerPrefs._enemyStartTime = 24;
+	               playerPrefs_enemySpeed=6;
+				
+				
+				
+			}     */
+			
+		/*	
+			
+			if( GetComponent<TextMesh>().text == "SMALL"){
+			
+				 GetComponent<TextMesh>().text = "LARGE"; 
+			CtoI = (int)(Mathf.Round(23)) ;  
+				
+				
+				   playerPrefs._intGridSize = CtoI;
+				CtoI = (int) 60;
+				   playerPrefs._enemyStartTime = CtoI;
+	               playerPrefs_enemySpeed=7;
+				
+				
+				
+				
+				
+				
+			}
+			
+			
+			  if( GetComponent<TextMesh>().text == "S"){
+			
+				 GetComponent<TextMesh>().text = "SMALL"; 
+			
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			audio.Play();
+			
+			
+              
+			
 		
-		
+			
+			break;
+		*/
 			
 		// if clicks on Options then play click sound and load options Menu
 		

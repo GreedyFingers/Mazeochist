@@ -48,7 +48,7 @@ public class Volume2 : MonoBehaviour {
 
 	
 	// creates the slider to control the music volume	
-hSliderValue = GUI.HorizontalSlider(new Rect(520, 450, 400, 35), hSliderValue, 0.0F, 1.0F);
+hSliderValue = GUI.HorizontalSlider(new Rect(560, 450, 400, 35), hSliderValue, 0.0F, 1.0F);
 		GetComponent<TextMesh>().text = ""+GamePreferences.Volume;
 		
 

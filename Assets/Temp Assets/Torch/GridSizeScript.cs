@@ -9,46 +9,58 @@ using System.Collections;
 // sets the volume used for music but not for other sounds
 
 public class  GridSizeScript: MonoBehaviour {
-	public static float hSliderValue   = 0;
+	
 	 public string MenuButtonIdentity;
-	public int CtoI =0;
-	// Use this for initialization
+	
 	void Start () {
 		
-	CtoI = (int)(Mathf.Round(hSliderValue+2)) ;    
+	
  	
 		
 
 		
-		playerPrefs._intGridSize= CtoI;
-	 GetComponent<TextMesh>().text = ""+playerPrefs._intGridSize; 
-		 //GetComponent<TextMesh>().text ="" + GameObject.Find ("playerPrefs").GetComponent<playerPrefs>();
+	
 	}
 	
 	// Update is called once per frame
-	void Update () {        // sets gridsize
+	void Update () {       
 	
 		
 			
-		CtoI = (int)(Mathf.Round(hSliderValue+2)) ;    
- 	
-		playerPrefs._intGridSize= CtoI;
-	//		
-		GetComponent<TextMesh>().text = ""+playerPrefs._intGridSize; 
-		// display gridsize
 		
-		
-	
-	//	(Mathf.Round(GamePreferences.Volume * 100f)) / 100f;
-		//yourFloat = Mathf.Round(yourFloat * 100f) / 100f;
 		
 		
 		
 		
 	}
 
+	
+	
+	void OnMouseEnter() 
+    {
+	
+	
+		
+        renderer.material.color = Color.blue;
+    }
 
- void OnGUI() {
+    // when mouse leaves turn text to white
+	void OnMouseExit()
+    {
+        renderer.material.color = Color.white;
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+ 	void  OnMouseUp(){
     
  
 
@@ -56,12 +68,63 @@ public class  GridSizeScript: MonoBehaviour {
 
  
 
-	
-	// creates the slider to control the gridsize
-hSliderValue = GUI.HorizontalSlider(new Rect(500, 200, 400, 35), hSliderValue, 0f, 97f);
+	    if( GetComponent<TextMesh>().text == "LARGE"){
+			
+				 GetComponent<TextMesh>().text = "S"; 
+			
+			
+				
+					playerPrefs._intGridSize = 17;
+				   playerPrefs._enemyStartTime = 25;
+	               playerPrefs._enemySpeed=6;
+				
+				
+				
+			}     
+			
+			
+			
+			if( GetComponent<TextMesh>().text == "SMALL"){
+			
+				 GetComponent<TextMesh>().text = "LARGE"; 
+			
+				
+				   playerPrefs._intGridSize = 23;
+			
+				   playerPrefs._enemyStartTime = 60;
+	               playerPrefs._enemySpeed=7;
+				
+				
+				
+				
+				
+				
+			}
+			
+			
+			  if( GetComponent<TextMesh>().text == "S"){
+			
+				 GetComponent<TextMesh>().text = "SMALL"; 
+			
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			audio.Play();
+			
+			
+              
+			
 		
+			
+			
 		
-			//	GetComponent<TextMesh>().text = ""+playerPrefs._intGridSize; // displays the volume
+
 		
 		
 		

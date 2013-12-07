@@ -3,9 +3,9 @@ using System.Collections;
 
 public class playerPrefs : MonoBehaviour {
 	
-	public static int _intGridSize =3;
-	public int _enemyStartTime;
-	public int _enemySpeed;
+	public static int _intGridSize=17;
+	public static int _enemyStartTime=25;
+	public static int _enemySpeed=6;
 	
 	// Use this for initialization
 	void Start () {
@@ -17,3 +17,6 @@ public class playerPrefs : MonoBehaviour {
 	
 	}
 }
+
+
+	

@@ -44,7 +44,7 @@ public class Sound : MonoBehaviour {
 
 	
 		// creates the slider
-hSliderValue2 = GUI.HorizontalSlider(new Rect(520, 320, 400, 35), hSliderValue2, 0.0F, 1.0F);
+hSliderValue2 = GUI.HorizontalSlider(new Rect(560, 335, 400, 35), hSliderValue2, 0.0F, 1.0F);
 		GetComponent<TextMesh>().text = ""+GamePreferences.Sound; // displays the value of the slider
 		
 
