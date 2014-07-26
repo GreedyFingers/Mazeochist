@@ -177,10 +177,9 @@ public class FSMLevel : MonoBehaviour {
         //choose starting room
 		_startingRoom = ChooseEdgeRoom();
 		_startingRoom.GetComponent<roomScript>().visited = true;
-		_startWall = ReplaceWallWithDoorWall(_startingRoom);
 		_endingRoom = ChooseEdgeRoom();
 		_endingRoom.GetComponent<roomScript>().endRoom = true;
-		_endWall = ReplaceWallWithDoorWall(_endingRoom);		
+		_endWall = ReplaceWallWithDoorWall(_endingRoom,true);		
 		PlaceEndHallway(_endWall);
 		PlaceEnemyGate();
 		//begin Recursive Depth-First Search for creating maze from grid of rooms
@@ -188,9 +187,11 @@ public class FSMLevel : MonoBehaviour {
 		return;
 	}
 
-	GameObject ReplaceWallWithDoorWall(GameObject objCurrentRoom)
+	GameObject ReplaceWallWithDoorWall(GameObject objCurrentRoom,bool blnOpenWall)
 	{
-		Vector3 wallLocation = new Vector3(0,0,0);		
+		GameObject originalWall = new GameObject();
+		Vector3 wallLocation = new Vector3(0,0,0);	
+		Quaternion wallRotation = new Quaternion (0, 0, 0,0);
 		DIRECTION wallToReplace = ChooseWallToReplace(objCurrentRoom);
 		GameObject wallWithDoor;
 		wallWithDoor = (GameObject)Instantiate(doorWallObject,new Vector3(0,0,0),Quaternion.identity);		
@@ -200,27 +201,29 @@ public class FSMLevel : MonoBehaviour {
 				wallLocation = objCurrentRoom.transform.FindChild("leftWall").transform.position;
 				wallWithDoor.transform.Rotate(new Vector3(0,180,0));
 				break;
-			case(DIRECTION.RIGHT):
+			case(DIRECTION.RIGHT):;
 				wallLocation = objCurrentRoom.transform.FindChild("rightWall").transform.position;
 				wallWithDoor.transform.Rotate(new Vector3(0,0,0));			
 				break;
-			case(DIRECTION.ABOVE):
-					wallLocation = objCurrentRoom.transform.FindChild("topWall").transform.position;	
-				wallWithDoor.transform.Rotate(new Vector3(0,270,0));			
+			case(DIRECTION.ABOVE):;
+					wallLocation = objCurrentRoom.transform.FindChild("topWall").transform.position;
+				wallWithDoor.transform.Rotate(new Vector3(0,270,0));		
 				break;
 			case(DIRECTION.BELOW):
 				wallLocation = objCurrentRoom.transform.FindChild("bottomWall").transform.position;	
 				wallWithDoor.transform.Rotate(new Vector3(0,90,0));			
 				break;		
 		}
-		removeWall(objCurrentRoom,wallToReplace);
-		wallWithDoor.transform.position = wallLocation;
-		return wallWithDoor;
+			removeWall (objCurrentRoom, wallToReplace, null);
+			wallWithDoor.transform.position = wallLocation;
+		wallWithDoor.transform.Translate (0, -5, 0);
+			return wallWithDoor;
 	}
 	
 	void PlaceEndHallway(GameObject wallWithDoor)
 	{
 		GameObject endHallway = (GameObject)Instantiate(endCorridorObject,wallWithDoor.transform.position,Quaternion.identity);	
+		endHallway.transform.Translate (new Vector3(0, 5, 0));
 		endHallway.transform.rotation = wallWithDoor.transform.rotation;
 	}
 	
@@ -244,7 +247,6 @@ public class FSMLevel : MonoBehaviour {
 												   _startingRoom.transform.position.y + 
 													_startingRoom.transform.FindChild("topWall").renderer.bounds.size.y*.99f,
 												   _startingRoom.transform.position.z),Quaternion.identity);
-		_enemyGate.transform.Rotate(new Vector3(0,_startWall.transform.rotation.y+270,0));
 	}
 	
 	///Input: (none)
@@ -383,7 +385,7 @@ public class FSMLevel : MonoBehaviour {
 	///Called From: VisitNeighbors()
 	///Calls: (none)
 	///remove a wall between two rooms	
-    private void removeWall(GameObject objCurrentRoom, DIRECTION wallLocation, GameObject objNeighbor = null )
+    private void removeWall(GameObject objCurrentRoom, DIRECTION wallLocation, GameObject objNeighbor)
     {
 		GameObject objCurrentWall;
 		bool deleteNeighborWall = true;
