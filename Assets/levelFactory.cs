@@ -34,15 +34,7 @@ public class levelFactory : MonoBehaviour {
 	
 	private void level_gameWon(GameObject sender)
 	{
-		_timeElapsed = currentLevel.GetComponent<FSMLevel>().Player.GetComponent<FSMPlayer>().TotalTimeElapsed;			
-        if (System.IO.File.Exists("C:/Users/Squee/Documents/stats.csv")) 
-        {
-          		// Create a file to write to. 
-          		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
-          		{
-          		    sw.WriteLine("Won" + "," + _enemyStartTime + "," + _enemySpeed + "," + _intGridSize);
-          		}					
-        }				
+		_timeElapsed = currentLevel.GetComponent<FSMLevel>().Player.GetComponent<FSMPlayer>().TotalTimeElapsed;							
 		if((_enemyStartTime/_timeElapsed)>.25)
 		//	GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed--;
 		playerPrefs._enemySpeed--;
@@ -69,14 +61,7 @@ public class levelFactory : MonoBehaviour {
 	private void level_gameLost(GameObject sender)
 	{
 		_timeElapsed = currentLevel.GetComponent<FSMLevel>().Player.GetComponent<FSMPlayer>().TotalTimeElapsed;			
-        if (System.IO.File.Exists("C:/Users/Squee/Documents/stats.csv")) 
-        {
-          		// Create a file to write to. 
-          		using (System.IO.StreamWriter sw = System.IO.File.AppendText("C:/Users/Squee/Documents/stats.csv")) 
-          		{
-          		    sw.WriteLine("Won" + "," + _enemyStartTime + "," + _enemySpeed + "," + _intGridSize);
-          		}					
-        }		
+	
 		if((_enemyStartTime/_timeElapsed)>.25)
 			//GameObject.Find("playerPrefs").GetComponent<playerPrefs>()._enemySpeed--;
 			playerPrefs._enemySpeed--;
